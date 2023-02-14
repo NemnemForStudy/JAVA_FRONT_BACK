@@ -5,4 +5,5 @@ export enum VIEW {
     TSX = 'tsx',
     HOOK = 'hook',
     MUI = 'mui',
+    ROUTER = 'router'
 }

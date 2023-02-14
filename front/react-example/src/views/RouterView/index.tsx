@@ -1,5 +1,6 @@
+import { Typography } from '@mui/material'
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 //# Router
 //? Server의 Resource 경로를 추적하고 있다가 해당 경로가 바뀌면
@@ -12,7 +13,9 @@ import { Route } from 'react-router-dom'
 //^ Route 컴포넌트
 //? Resource Path에 따라 보여주고자 하는 컴포넌트를 지정할 때 사용
 export default function RouterView() {
-  return (
-    <Route path='test'></Route>
+    return (
+    <Routes>
+        <Route path='test' element={(<Typography variant='h3'>Test Page</Typography>)}/>
+    </Routes>
   )
 }

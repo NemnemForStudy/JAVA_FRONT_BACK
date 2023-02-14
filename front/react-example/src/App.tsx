@@ -11,6 +11,7 @@ import JsxTsx from "./views/JsxTsx";
 import { VIEW } from "./enums";
 import Hook from "./views/Hook";
 import Mui from "./views/Mui";
+import RouterView from "./views/RouterView";
 
 export default function App() {
   const [view, setView] = useState<VIEW>(VIEW.NAVER);
@@ -34,7 +35,8 @@ export default function App() {
           view === VIEW.TYPESCRIPT ? (<Es6Typescript />) : 
           view === VIEW.TSX ? (<JsxTsx />) : 
           view === VIEW.HOOK ? (<Hook />) : 
-          view === VIEW.MUI ? (<Mui />) : (<></>)}
+          view === VIEW.MUI ? (<Mui />) :
+          view === VIEW.ROUTER ? (<RouterView />) : (<></>)}
       </div>
     </div>
   );
