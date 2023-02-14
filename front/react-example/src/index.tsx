@@ -21,6 +21,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
+  //! Router 쓸 때 BrowserRouter는 필수이다.
   <BrowserRouter>
     <React.StrictMode>
       <App />
