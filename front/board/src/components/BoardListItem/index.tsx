@@ -1,5 +1,7 @@
-import { Avatar, Box, Typography } from '@mui/material'
+import { Avatar, Box, Card, Typography } from '@mui/material'
+import CardActionArea from '@mui/material/CardActionArea'
 import React from 'react'
+import { useNavigate } from 'react-router'
 import { IPreviewItem } from 'src/interfaces'
 
 interface Props {
@@ -7,9 +9,13 @@ interface Props {
     item: IPreviewItem
 }
 
-export default function BoardListItem({item} : Props) {
+export default function BoardListItem({ item }: Props) {
+    
+    const navigate = useNavigate();
+
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', p: '24px', backgroundColor: '#ffffff' }}>
+    <Card variant='outlined'>
+        <CardActionArea sx={{ display: 'flex', justifyContent: 'space-between', p: '24px', backgroundColor: '#ffffff' }} onClick={() => navigate(`/board/detail/${item.boardNumber}`)}>
         <Box>
             <Box sx={{ display: 'flex' }}>
                 <Box sx={{ mr: '8px' }}>
@@ -27,12 +33,15 @@ export default function BoardListItem({item} : Props) {
             <Box>
                 <Typography sx={{ fontSize: '12px', fontWeight: 400, color: 'rgba(0, 0, 0, 0.7)' }}>{`댓글 ${item.commentCount} · 좋아요 ${item.likeCount} · 조회수 ${item.viewCount}`}</Typography>
             </Box>
-        </Box>
-        <Box>
-              {/* 이미지 들어올 공간 */}
-              {/* //? as string으로 강제적으로 string으로 다루겠다는 의미 */}
-              <Box component='img' src={item.img as string} sx={{height: '152px', width: '152px', borderRadius: '5%' }}/>
-        </Box>
-    </Box>
+          </Box>
+          {item.img && (
+            <Card>
+                {/* 이미지 들어올 공간 */}
+                {/* //? as string으로 강제적으로 string으로 다루겠다는 의미 */}
+                <Box component='img' src={item.img as string} sx={{height: '152px', width: '152px', borderRadius: '5%' }}/>
+            </Card>  
+          )}
+        </CardActionArea>
+    </Card>
   )
 }

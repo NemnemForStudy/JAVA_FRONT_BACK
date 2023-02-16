@@ -27,7 +27,7 @@ export default function NavigationBar() {
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             onClick={() => navigator('/')}
           >
-            Hoons Board
+            Nemnem's Board
           </Typography>
           <Box>
             <IconButton color={"default"}>
