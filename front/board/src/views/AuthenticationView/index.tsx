@@ -22,7 +22,7 @@ export default function AuthenticationView() {
                 <Box sx={{display: 'flex', height: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                     <ContentPasteTwoToneIcon sx={{fontSize: 40}} />
                     <Typography variant="h4">환영합니다.</Typography>
-                    <Typography variant="h4">HOONS BOARD입니다.</Typography>
+                    <Typography variant="h4">Nemnem's BOARD입니다.</Typography>
                 </Box>
             </Grid>
             <Grid item lg={5} sm={12}>

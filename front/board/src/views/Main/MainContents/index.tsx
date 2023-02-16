@@ -1,8 +1,18 @@
 import { Box, Grid, Pagination, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 import BoardListItem from 'src/components/BoardListItem'
+import PopularCard from 'src/components/PopularCard'
+import { IPreviewItem } from 'src/interfaces';
+import { BOARD_LIST } from 'src/mock';
 
 export default function MainContents() {
+
+  const [boardList, setBoardList] = useState<IPreviewItem[]>([]);
+  useEffect(() => {
+    setBoardList(BOARD_LIST);
+  }, [])
+
   return (
     <Box sx={{ p: '40px 120px', backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
       <Box>
@@ -11,9 +21,11 @@ export default function MainContents() {
       <Box sx={{ pt: '20px', pb: '80px' }}>
         <Grid container spacing={3}>
           <Grid item sm={12} md={8}>
-            <BoardListItem />
+            {boardList.map((boardItem) => (<BoardListItem item={boardItem}/>))}
           </Grid>
-          <Grid item sm={12} md={4}></Grid>
+          <Grid item sm={12} md={4}>
+            <PopularCard />
+          </Grid>
         </Grid>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
