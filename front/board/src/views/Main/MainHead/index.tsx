@@ -17,7 +17,7 @@ export default function MainHead() {
     <Box sx={{ pb: '40px', pl: '120px', pr: '120px' }}>
         {/* 점보트론 텍스트 */}
         <Box sx={{ pt: '80px', pb: '32px', textAlign: 'center' }}>
-            <Typography sx={{ fontSize: '40px', fontWeight: 400 }}>Hoons Board에서</Typography>
+            <Typography sx={{ fontSize: '40px', fontWeight: 400 }}>Nemnem's Board에서</Typography>
             <Typography sx={{ fontSize: '40px', fontWeight: 400 }}>다양한 이야기를 나눠보세요.</Typography>
         </Box>
         {/* 주간 TOP 3 게시물 */}

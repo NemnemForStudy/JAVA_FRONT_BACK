@@ -429,7 +429,7 @@ export const BOARD_LIST: IPreviewItem[] = [
         writerProfile: '',
         writerNickname: '작성자1',
         writeDate: '2023. 02. 15.',
-        boardTitle: '게시물 제목1',
+        boardTitle: '게시물 제목3',
         boardContent: '게시물1 내용입니다.',
         likeCount: 10,
         commentCount: 78,
@@ -453,7 +453,7 @@ export const BOARD_LIST: IPreviewItem[] = [
         writerProfile: '',
         writerNickname: '작성자1',
         writeDate: '2023. 02. 15.',
-        boardTitle: '게시물 제목1',
+        boardTitle: '게시물 제목2',
         boardContent: '게시물1 내용입니다.',
         likeCount: 10,
         commentCount: 78,
@@ -465,7 +465,7 @@ export const BOARD_LIST: IPreviewItem[] = [
         writerProfile: '',
         writerNickname: '작성자1',
         writeDate: '2023. 02. 15.',
-        boardTitle: '게시물 제목1',
+        boardTitle: '게시물 제목3',
         boardContent: '게시물1 내용입니다.',
         likeCount: 10,
         commentCount: 78,
@@ -475,14 +475,16 @@ export const BOARD_LIST: IPreviewItem[] = [
 ];
 
 export const POPULAR_LIST: string[] = [
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식',
-    '오늘도 코딩 공부', '토트넘', '휴식'
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴',
+    '아침 메뉴', '점심 메뉴', '저녁 메뉴'
 ];
