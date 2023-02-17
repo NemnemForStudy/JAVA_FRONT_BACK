@@ -13,6 +13,8 @@ import { useState } from 'react';
 
 export default function NavigationBar() {
 
+  //? 초기화값을 지정하지 않으면 () 안에 undefined가 된 것과 똑같아 진다.
+  //? 타입을 2개 받을 수 있게 됨. 무조건 초기화를 해줘야 함.
   const [content, setContent] = useState<string>('');
   const navigator = useNavigate();
   const path = useLocation();
