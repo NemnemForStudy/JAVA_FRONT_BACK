@@ -6,34 +6,57 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button } from '@mui/material';
+import { Button, FormControl, InputAdornment, OutlinedInput } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Search from '@mui/icons-material/Search';
+import { useState } from 'react';
 
 export default function NavigationBar() {
 
+  const [content, setContent] = useState<string>('');
   const navigator = useNavigate();
   const path = useLocation();
+  const onSearchHandler = () => {
+    if (!content.trim()) {
+      alert('검색어를 입력하세요');
+      return;
+    };
 
-  console.log(path.pathname);
+    navigator(`/board/search/${content}`);
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, pr: "120px", pl: "120px" }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar variant='outlined' position="static" sx={{ p: '0px 120px', backgroundColor: '#ffffff'}}>
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block', color: "#000000" }}}
             onClick={() => navigator('/')}
           >
             Nemnem's Board
           </Typography>
-          <Box>
-            <IconButton color={"default"}>
-              <SearchIcon />
-            </IconButton>
-            {path.pathname !== '/auth' && (<Button variant='contained' color='secondary' onClick={() => navigator('/auth')}>로그인</Button>)}
+          <Box sx={{ display: 'flex' }}>
+            <FormControl variant='outlined' sx={{ mr:'10px' }}>
+              <OutlinedInput
+                size='small'
+                type='text'
+                placeholder='검색어를 입력해주세요'
+                endAdornment={
+                  //? 포지션이 필수로 들어가야함.
+                  <InputAdornment position='end'>
+                    <IconButton edge='end' onClick={onSearchHandler}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                }
+                onChange={(event) => setContent(event.target.value)}
+              />
+
+            </FormControl>
+            {path.pathname !== '/auth' && (<Button variant='contained' sx={{backgroundColor: '#000000'}} onClick={() => navigator('/auth')}>로그인</Button>)}
           </Box>
         </Toolbar>
       </AppBar>

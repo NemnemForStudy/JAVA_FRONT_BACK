@@ -32,7 +32,7 @@ const usePagingHook = (content?: string) => {
         //? !content ? ~ 라고도 쓸 수 있다.
         const tmp =  !content ? BOARD_LIST : BOARD_LIST.filter((board) => board.boardTitle.includes(content as string))
         setBoardList(tmp);
-    }, [])
+    }, [content])
 
     useEffect(() => {
         onPageHandler(pageNumber);
