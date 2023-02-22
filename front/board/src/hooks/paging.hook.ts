@@ -1,47 +1,52 @@
-//? 커스텀 Hook의 규칙 - use로 사용해야한다, 컴포넌트 최상위에 위치, 그 안에서만 사용 가능
-
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
 import { IPreviewItem } from "src/interfaces";
 import { BOARD_LIST } from "src/mock";
 
-//? content를 사용하기 위해 매개변수로 받아옴
-const usePagingHook = (content?: string) => {
+const usePagingHook = () => {
+  const COUNT = 5;
 
-    const [boardList, setBoardList] = useState<IPreviewItem[]>([]);
-    const [pageNumber, setPageNumer] = useState<number>(1);
-    const [viewList, setViewList] = useState<IPreviewItem[]>([]);
+  const [boardList, setBoardList] = useState<IPreviewItem[]>([]);
+  const [viewList, setViewList] = useState<IPreviewItem[]>([]);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
-    const COUNT = 5;
-    const onPageHandler = (page: number) => {
-        setPageNumer(page);
+  //? 한 페이지에 5개의 게시물을 보여주고자 할 때
+  //? 배열의 시작 인덱스    5 * pageNumber - 5 -> 5 * (pageNumber - 1)
+  //? 배열의 마지막 인덱스  5 * pageNumber - 1
 
-        const tmpList: IPreviewItem[] = [];
-        const startIndex = COUNT * (page - 1); 
-        const endIndex = COUNT * page - 1;
+  const onPageHandler = (page: number) => {
+    setPageNumber(page);
+  
+    const tmpList: IPreviewItem[] = [];
 
-        for (let index = startIndex; index <= endIndex; index++){
-            if (boardList.length < index + 1) break;
-            tmpList.push(boardList[index]);
-        }
-        setViewList(tmpList);
+    const startIndex = COUNT * (page - 1);
+    const endIndex = COUNT * page - 1;
+
+    for (let index = startIndex; index <= endIndex; index++) {
+      if (boardList.length < index + 1) break;
+      tmpList.push(boardList[index]);
     }
 
-    useEffect(() => {
-        //? content === undefined ? ~라고도 쓸 수 있고
-        //? !content ? ~ 라고도 쓸 수 있다.
-        const tmp =  !content ? BOARD_LIST : BOARD_LIST.filter((board) => board.boardTitle.includes(content as string))
-        setBoardList(tmp);
-    }, [content])
+    setViewList(tmpList);
+  }
 
-    useEffect(() => {
-        onPageHandler(pageNumber);
-    }, [boardList])
+  // useEffect(() => {
+  //   //# array.filter(요소 => 조건)
+  //   //? 특정한 조건에 부합하는 요소만 모아서 새로운 배열로 만들어 반환하는 메서드
+  //   //# string.inclues(검색할 문자열)
+  //   //? 해당 문자열에서 검색할 문자열이 존재한다면 true, 아니면 false를 반환하는 메서드
+  //   const tmp = !content ? BOARD_LIST : BOARD_LIST.filter((board) => board.boardTitle.includes(content as string));
+  //   setBoardList(tmp);
 
-    //? 내보내 주는 return
-    //? {}해야 그냥 받아올 수 있다.
-    //? 대괄호를 쓰면 이름을 바꿀 수 있는데 전부 다 받아와야 한다.
-    return { boardList, viewList, pageNumber, onPageHandler, COUNT };
+  //   //? SELECT * FROM Board ORDER BY writeDate DESC;
+  //   //? SELECT * FROM Board WHERE boardTitle LIKE '%content%' ORDER BY writeDate DESC;
+
+  // }, [content]);
+
+  useEffect(() => {
+    onPageHandler(pageNumber);
+  }, [boardList]);
+
+  return {boardList, viewList, pageNumber, setBoardList, onPageHandler, COUNT};
 }
 
 export default usePagingHook;

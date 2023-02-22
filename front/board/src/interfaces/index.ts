@@ -12,3 +12,13 @@ export interface IPreviewItem {
 
     boardNumber: number;
 }
+
+export interface IUser {
+    email: string;
+    password: string;
+    nickname: string;
+    telNumber: string;
+    address: string;
+    addressDetail: string;
+    profile?: string;
+}

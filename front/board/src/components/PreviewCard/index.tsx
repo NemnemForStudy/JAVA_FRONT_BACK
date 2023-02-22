@@ -1,10 +1,9 @@
 import React from 'react'
 
-import { Avatar, Box, Card, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardActionArea, Typography } from '@mui/material'
 import { IPreviewItem } from 'src/interfaces'
 import BoardListItem from '../BoardListItem';
-import CardActionArea from '@mui/material/CardActionArea';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
     previewItem: IPreviewItem
@@ -13,12 +12,13 @@ interface Props {
 export default function PreviewCard({ previewItem }: Props) {
 
     const backgroundImage = `url(${previewItem.img})`;
-    const navigate = useNavigate();
+
+    const navigator = useNavigate();
 
   return (
     <Card>
-        <CardActionArea sx={{ height: '508px', backgroundImage: backgroundImage, backgroundSize: 'cover'}} onClick={() => navigate(`/board/detail${previewItem.boardNumber}`)}>
-            <Box sx={{height: '100%', display: 'flex', flexDirection: 'column-reverse'}}>
+        <CardActionArea sx={{ height: '508px', backgroundImage: backgroundImage, backgroundSize: 'cover' }} onClick={() => navigator(`/board/detail/${previewItem.boardNumber}`)}>
+            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column-reverse' }}>
                 <Box sx={{ p: '24px' }}>
                     <Box sx={{ display: 'flex' }}>
                         <Box sx={{ mr: '8px' }}>
