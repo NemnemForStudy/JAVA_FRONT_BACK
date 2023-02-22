@@ -1,4 +1,4 @@
-import { IPreviewItem, IUser } from "src/interfaces";
+import { ILikeUser, IPreviewItem, IUser } from "src/interfaces";
 
 export const TOP3: IPreviewItem[] = [
     {
@@ -486,3 +486,66 @@ export const USER: IUser = {
     address: '사랑시 고백구 행복동',
     addressDetail: '아파트',
 }
+
+export const LIKE_LIST: ILikeUser[] = [
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    },
+    {
+        likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
+        likeUserNickname: 'nemnem'
+    }
+]

@@ -22,3 +22,8 @@ export interface IUser {
     addressDetail: string;
     profile?: string;
 }
+
+export interface ILikeUser {
+    likeUserProfile: string;
+    likeUserNickname: string;
+}
