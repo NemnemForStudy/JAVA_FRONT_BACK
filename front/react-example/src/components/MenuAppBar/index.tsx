@@ -15,15 +15,10 @@ import { PAGES } from 'src/constants';
 import { VIEW } from 'src/enums';
 import { Link, useNavigate } from 'react-router-dom';
 
-interface Props {
-  setView: Dispatch<SetStateAction<VIEW>>;
-}
-
 function MenuAppBar() {
   
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
-  const navigate = useNavigate();
+  const navigator = useNavigate();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -94,7 +89,7 @@ function MenuAppBar() {
               */}
               {PAGES.map((page) => (
                 <MenuItem key={page.title}>
-                  <Link to={page.viewValue} style={{ textAlign: 'center'}}>{page.title}</Link>
+                  <Link to={page.viewValue} style={{ textAlign: 'center' }}>{page.title}</Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -121,7 +116,7 @@ function MenuAppBar() {
               <Button
                 key={page.title}
                 sx={{ my: 2, color: 'white', display: 'block' }}
-                onClick={() => navigate(page.viewValue)}
+                onClick={() => navigator(page.viewValue)}
               >
                 {page.title}
               </Button>
@@ -131,7 +126,7 @@ function MenuAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
-                <Avatar alt="Nemnem" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="서지훈" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
           </Box>

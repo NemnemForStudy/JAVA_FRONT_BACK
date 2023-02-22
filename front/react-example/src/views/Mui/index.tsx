@@ -10,6 +10,8 @@ import AlarmOutlinedIcon from '@mui/icons-material/AlarmOutlined';
 import { ThemeProvider } from '@emotion/react';
 import Grid from '@mui/material/Grid';
 
+import './style.css';
+
 //# MUI 
 //? Material User Interface
 //? 구글의 머터리얼 디자인을 구현하는 오픈 소스 '리액트 컴포넌트' 라이브러리
@@ -189,23 +191,24 @@ export default function Mui() {
         //^ 3. spacing
         //? item간의 간격 지정 - container로 지정된 Grid Component에서 사용
         //^ 4. xs, sm, md, lg, xl
-        //? xs - 576px > width
-        //? sm - 576px <= width
-        //? md - 768px <= width
-        //? lg - 992px <= width
+        //? xs - 600px > width
+        //? sm - 600px <= width
+        //? md - 900px <= width
+        //? lg - 1200px <= width
         //? xl - 1536px <= width
         */}
         <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4}>
+            <Grid item xs={12} sm={6} lg={4}>
                 <Box sx={{ height: '100px', backgroundColor: 'red' }}></Box>
             </Grid>
-            <Grid item xs={12} md={6} xl={4}>
+            <Grid item xs={12} sm={6} lg={4}>
                 <Box sx={{ height: '100px', backgroundColor: 'blue' }}></Box>
             </Grid>
-            <Grid item xs={12} md={12} xl={4}>
+            <Grid item xs={12} sm={12} lg={4}>
                 <Box sx={{ height: '100px', backgroundColor: 'red' }}></Box>
             </Grid>
         </Grid>
+        <Box className="box-style"></Box>
     </>
   )
 }
