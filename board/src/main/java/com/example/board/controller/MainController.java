@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.board.dto.GetTestResponseDto;
 import com.example.board.dto.PostTestRequestDTO;
+import com.example.board.dto.ResponseDto;
 import com.example.board.service.MainService;
 
 //? 해당 클래스를 REST API로 사용되는 Controller로 지정할 수 있음.
@@ -31,9 +32,9 @@ public class MainController {
 	
 	//? HTTP 메서드 중 GET 방식의 요쳉에 대한 처리를 지정할 때 사용
 	@GetMapping("/")
-	public String getMain() {
+	public ResponseDto<String> getMain() {
 
-		String result = mainService.getMain();
+		ResponseDto<String> result = mainService.getMain();
 		return result;
 	}
 	
@@ -46,7 +47,8 @@ public class MainController {
 	//? 파라미터 data는 이름이 달라도 되는데
 	//! 주의) 위 {} 안에 이름과 Path()안에 이름이 같아야 한다.
 	public String getVariable(@PathVariable("data") String data) {
-		return "GetVariable Page '" + data + "'";
+		String result = mainService.getVariable(data);
+		return result;
 	}
 	
 	//? browser는 Get방식으로만 통신(요청)이 가능하다.
@@ -56,7 +58,8 @@ public class MainController {
 	//? post는 url로 보낼 수 없고 body에 담아서 보내줘야한다.
 	@PostMapping("/")
 	public String PostMain() {
-		return "Post Page Response";
+		String result = mainService.postMain();
+		return result;
 	}
 	
 	//? body에 있는 전부를 받아온다.
@@ -64,21 +67,24 @@ public class MainController {
 	//#				 클라이언트로부터 request body로 데이터를 받고자 할 때 사용할 수 있음.
 	@PostMapping("/requestBody")
 	public String postRequestBody(@RequestBody String data) {
-		return "Post Body Data '" + data + "'";
+		String result = mainService.postRequestBody(data);
+		return result;
 	}
 	
 	//? HTTP 메서드 중 PATCH 방식의 요청에 대한 처리를 지정할 때 사용
 	@PatchMapping("/")
 	public String patchMain() {
-		return "Patch 메서드는 수정 작업을 지정한 메서드입니다."
-				+ "클라이언트로부터 데이터를 받을 땐 request body로 받습니다.";
+
+		String result = mainService.patchMain();
+		return result; 
 	}
 	
 	//? HTTP 메서드 중 Delete 방식의 요청에 대한 처리를 지정할 때 사용
 	@DeleteMapping("/")
 	public String deleteMain() {
-		return "Delete 메서드는 삭제 작업을 지정한 메서드입니다. "
-				+ "클라이언트로부터 데이터를 받을 땐 pathVariable로 받습니다.";
+
+		String result = mainService.deleteMain();
+		return result; 
 	}
 	
 	//? 전달해줄 게 없으니 requestbody뒤에 () 안붙임.
@@ -86,13 +92,17 @@ public class MainController {
 	//? 전송 or 수신
 	@PostMapping("/test")
 	public String postTest(@Valid @RequestBody PostTestRequestDTO requestBody) {
-		return requestBody.toString();
+		
+		String result = mainService.postTest(requestBody);
+		return result;
 	}
 	
 	//? 내보낼 적에 기본 타입이 아닌 오브젝트를 보내보자
 	@GetMapping("/test")
 	public GetTestResponseDto getTest() {
-		return new GetTestResponseDto(10, "Nemnem");
+
+		GetTestResponseDto result = mainService.getTest();
+		return result;
 	}
 	
 }
