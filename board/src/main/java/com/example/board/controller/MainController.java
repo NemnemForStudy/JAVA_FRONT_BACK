@@ -46,8 +46,8 @@ public class MainController {
 	//? 가져올때는 파라미터로 받아와야 하니 ()안에 @PathVariable + 파라미터 써야한다.
 	//? 파라미터 data는 이름이 달라도 되는데
 	//! 주의) 위 {} 안에 이름과 Path()안에 이름이 같아야 한다.
-	public String getVariable(@PathVariable("data") String data) {
-		String result = mainService.getVariable(data);
+	public ResponseDto<String> getVariable(@PathVariable("data") String data) {
+		ResponseDto<String> result = mainService.getVariable(data);
 		return result;
 	}
 	
@@ -57,8 +57,8 @@ public class MainController {
 	//? data 보낼 때 차이점은 get방식은 path에 무조건 붙여서 보내줘야하는데
 	//? post는 url로 보낼 수 없고 body에 담아서 보내줘야한다.
 	@PostMapping("/")
-	public String PostMain() {
-		String result = mainService.postMain();
+	public ResponseDto<String> PostMain() {
+		ResponseDto<String> result = mainService.postMain();
 		return result;
 	}
 	
@@ -66,24 +66,24 @@ public class MainController {
 	//# @RequestBody: POST / PATCH 방식에서 사용할 수 있음
 	//#				 클라이언트로부터 request body로 데이터를 받고자 할 때 사용할 수 있음.
 	@PostMapping("/requestBody")
-	public String postRequestBody(@RequestBody String data) {
-		String result = mainService.postRequestBody(data);
+	public ResponseDto<String> postRequestBody(@RequestBody String data) {
+		ResponseDto<String> result = mainService.postRequestBody(data);
 		return result;
 	}
 	
 	//? HTTP 메서드 중 PATCH 방식의 요청에 대한 처리를 지정할 때 사용
 	@PatchMapping("/")
-	public String patchMain() {
+	public ResponseDto<String> patchMain() {
 
-		String result = mainService.patchMain();
+		ResponseDto<String> result = mainService.patchMain();
 		return result; 
 	}
 	
 	//? HTTP 메서드 중 Delete 방식의 요청에 대한 처리를 지정할 때 사용
 	@DeleteMapping("/")
-	public String deleteMain() {
+	public ResponseDto<String> deleteMain() {
 
-		String result = mainService.deleteMain();
+		ResponseDto<String> result = mainService.deleteMain();
 		return result; 
 	}
 	
@@ -91,17 +91,17 @@ public class MainController {
 	//? Request body or response body로 객체를 담을 때는 Dto를 사용해서
 	//? 전송 or 수신
 	@PostMapping("/test")
-	public String postTest(@Valid @RequestBody PostTestRequestDTO requestBody) {
+	public ResponseDto<String> postTest(@Valid @RequestBody PostTestRequestDTO requestBody) {
 		
-		String result = mainService.postTest(requestBody);
+		ResponseDto<String> result = mainService.postTest(requestBody);
 		return result;
 	}
 	
 	//? 내보낼 적에 기본 타입이 아닌 오브젝트를 보내보자
 	@GetMapping("/test")
-	public GetTestResponseDto getTest() {
+	public ResponseDto<GetTestResponseDto> getTest() {
 
-		GetTestResponseDto result = mainService.getTest();
+		ResponseDto<GetTestResponseDto> result = mainService.getTest();
 		return result;
 	}
 	

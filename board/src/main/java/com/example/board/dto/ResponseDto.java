@@ -19,8 +19,18 @@ public class ResponseDto<D> {
 
     //? 아래 메서드에서만 쓰는 제네릭을 추가해줘야한다. ResponseDto앞에 <D>추가
     //? data는 Generic이므로 D에서 받아오기 때문에 D를 썼다.
+    //# 성공시에 대한 인스턴스를 생성해주는 static 생성자
+    //? <D> Response<D>
+    //? 먼저오는 <D>는 해당 메서드에서 독립적으로 사용할 Generic을 지칭
+    //? 뒤에오는 <D>는 ResponseDto 클래스 타입에 필요로 하는 Generic을 지칭
     public static <D> ResponseDto<D> setSuccess(String message, D data) {
         //? message, data는 외부에서 받아온다.
         return ResponseDto.set(true, message, data);
+    }
+
+    //# 실패시에 대한 인스턴스를 생성해주는 static 생성자
+    public static <D> ResponseDto<D> setFail(String message) {
+        
+        return ResponseDto.set(false, message, null);
     }
 }
