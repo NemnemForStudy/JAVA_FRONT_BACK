@@ -16,5 +16,8 @@ public class GetTestResponseDto {
 	int number;
 	// 2. 문자열 형태의 text
 	String text;
+    public static GetTestResponseDto setSuccess(String string, GetTestResponseDto data) {
+        return null;
+    }
 	
 }
