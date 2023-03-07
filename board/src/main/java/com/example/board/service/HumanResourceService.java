@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.board.common.constant.ResponseMessage;
-import com.example.board.dto.request.humanResource.PostHumanResourceRequestDto;
 import com.example.board.dto.response.ResponseDto;
 import com.example.board.dto.response.humanResource.GetHumanResourceResponseDto;
+import com.example.board.dto.response.humanResource.PostHumanResourceRequestDto;
 import com.example.board.dto.response.humanResource.PostHumanResourceResponseDto;
 import com.example.board.entity.EmployeeEntity;
 import com.example.board.repository.DeptRepository;

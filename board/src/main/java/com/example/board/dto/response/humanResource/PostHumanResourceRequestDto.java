@@ -1,4 +1,4 @@
-package com.example.board.dto.request.humanResource;
+package com.example.board.dto.response.humanResource;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
