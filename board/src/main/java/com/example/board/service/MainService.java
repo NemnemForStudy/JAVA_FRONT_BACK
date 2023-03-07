@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.board.dto.GetTestResponseDto;
 import com.example.board.dto.PostTestRequestDTO;
-import com.example.board.dto.ResponseDto;
+import com.example.board.dto.response.ResponseDto;
 import com.example.board.entity.ExampleEntity;
 import com.example.board.repository.ExampleRepository;
+
+//? 2023-03-06 추가
+//? 접속 실패 같은 예외처리는 Service에서 호출한다.
+//? 그래서 예외처리는 Service에서 해줘야 한다.
 
 //! Service
 //? 실제 비즈니스 로직을 담당하는 Layer

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class PostHumanResourceResponseDto {
+public class GetHumanResourceResponseDto {
     private int employeeNumber;         //? 사번
     private String position;            //? 직급
     private String name;                //? 이름
@@ -27,7 +27,7 @@ public class PostHumanResourceResponseDto {
     private int annualIncome;           //? 연봉
     private String note;                //? 비고
 
-    public PostHumanResourceResponseDto(EmployeeEntity employeeEntity) {
+    public GetHumanResourceResponseDto(EmployeeEntity employeeEntity) {
         this.employeeNumber = employeeEntity.getEmployeeNumber();
         this.position = employeeEntity.getPosition();
         this.name = employeeEntity.getName();

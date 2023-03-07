@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.board.dto.GetTestResponseDto;
 import com.example.board.dto.PostTestRequestDTO;
-import com.example.board.dto.ResponseDto;
+import com.example.board.dto.response.ResponseDto;
 import com.example.board.service.MainService;
+
+//? 2023-03-06 추가
+//? 입력에 대한 검증은 Controller
+//? client와 server의 접점
 
 //? 해당 클래스를 REST API로 사용되는 Controller로 지정할 수 있음.
 //? Contoller = react의 Route와 비슷하다.
