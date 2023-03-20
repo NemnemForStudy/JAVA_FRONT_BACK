@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author ITPS
- *
- */
-module helloWorld {
-}
