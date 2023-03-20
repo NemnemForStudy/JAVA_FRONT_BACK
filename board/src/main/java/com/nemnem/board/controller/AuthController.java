@@ -13,12 +13,16 @@ import com.nemnem.board.dto.response.ResponseDto;
 import com.nemnem.board.dto.response.auth.SignInResponseDto;
 import com.nemnem.board.dto.response.auth.SignUpResponseDto;
 import com.nemnem.board.service.AuthService;
+
+import io.swagger.annotations.Api;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
 @RequestMapping(ApiPattern.AUTH)
+@Api(description="인증 모듈")
 public class AuthController {
     //? 인증과 관련된 녀석들을 처리하는 API를 작성할것이다.
     @Autowired private AuthService authService;
