@@ -34,6 +34,8 @@ import com.nemnem.board.dto.response.board.PostBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostCommentResponseDto;
 import com.nemnem.board.service.BoardService;
 
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping(ApiPattern.BOARD)
 public class BoardController {
@@ -81,7 +83,9 @@ public class BoardController {
     }
 
     @GetMapping(GET_BOARD)
-    public ResponseDto<GetBoardResponseDto> getBoard(@PathVariable("boardNumber") int boardNumber) {
+    public ResponseDto<GetBoardResponseDto> getBoard(
+        @ApiParam(value="게시물 번호", example="1", required=true)    
+        @PathVariable("boardNumber") int boardNumber) {
         ResponseDto<GetBoardResponseDto> response = boardService.getBoard(boardNumber);
         return response;
     }

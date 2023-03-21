@@ -15,6 +15,7 @@ import com.nemnem.board.dto.response.auth.SignUpResponseDto;
 import com.nemnem.board.service.AuthService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,8 @@ public class AuthController {
     //? URL은 카멜케이스 보다는 이렇게 쓰는 게 낫다.
     private final String SIGN_UP = "/sign-up";
     private final String SIGN_IN = "/sign-in";
+
+    @ApiOperation(value="회원가입", notes="이메일, 비밀번호, 닉네임, 전화번호, 주소를 입력하여 회원을 등록하고, 성공 시 회원가입 성공 여부에 true가 반환됨.")
 
     //? Auth와 관련된건 거의 POST
     @PostMapping(SIGN_UP)
