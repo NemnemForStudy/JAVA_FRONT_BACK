@@ -28,7 +28,6 @@ import com.nemnem.board.dto.response.board.GetMyListResponseDto;
 import com.nemnem.board.dto.response.board.GetSearchListResponseDto;
 import com.nemnem.board.dto.response.board.GetTop15RelatedSearchWordResponseDto;
 import com.nemnem.board.dto.response.board.GetTop15SearchWordResponseDto;
-import com.nemnem.board.dto.response.board.LikeResponseDto;
 import com.nemnem.board.dto.response.board.PatchBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostCommentResponseDto;
