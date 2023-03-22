@@ -15,9 +15,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired private SocketProvider socketProvider;
 
+    
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         //? addHandler(어떤 것을 넣을것인지, 연결할 때 어느 경로로 연결할 것인지)
+        //? setAllowedOrigins("*") <- chrome방식인거 같다.
         registry.addHandler(socketProvider, "/web-socket").setAllowedOrigins("*");
     }
 }

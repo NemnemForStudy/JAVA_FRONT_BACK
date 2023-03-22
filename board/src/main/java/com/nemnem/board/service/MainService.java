@@ -25,15 +25,15 @@ public class MainService {
     // }
 
     //? 매 시간 ?2초마다 실행
-    @Scheduled(cron="2 * * * * ?")
-    public void ScheduleCronJob() {
+    // @Scheduled(cron="2 * * * * ?")
+    // public void ScheduleCronJob() {
 
-        try {
-            crawling();
-        } catch(Exception exception){
-            exception.printStackTrace();
-        }
-    }
+    //     try {
+    //         crawling();
+    //     } catch(Exception exception){
+    //         exception.printStackTrace();
+    //     }
+    // }
 
     //? ex) 영화예매 같은 사이트 정보를 받아올 때 크롤링을 이렇게 쓰는 방법이 있다.
     public void crawling() throws Exception {
