@@ -40,7 +40,6 @@ public class MainService {
         Document document = Jsoup.connect("https://naver.com").get();
 
         Elements elements = document.select("#NM_FAVORITE > div.group_nav > ul.list_nav.NM_FAVORITE_LIST > li > a");
-        System.out.println(elements.size());
 
         for(Element element: elements) {
             System.out.println(element.attr("href"));
