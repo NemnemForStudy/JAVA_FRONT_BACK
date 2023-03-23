@@ -32,6 +32,7 @@ import com.nemnem.board.dto.response.board.PatchBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostCommentResponseDto;
 import com.nemnem.board.service.BoardService;
+import com.nemnem.board.service.LikeResponseDto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,10 +58,10 @@ public class BoardController {
     private final String PATCH_BOARD = "";
     private final String DELETE_BOARD = "/{boardNumber}";
 
-    @ApiOperation(value="게시물 작성", notes="제목, 내용, 이미지를 전송하면 게시물 작성 결과로 작성된 게시물 정보를 반환, 실패시 실패 메시지 반환")
+    @ApiOperation(value="게시물 작성", notes="제목, 내용, 이미지를 전송하면 게시물 작성 결과로 작성된 게시물 정보를 반환, 실패시 실패 메시지를 반환")
     @PostMapping(POST_BOARD)
     public ResponseDto<PostBoardResponseDto> postBoard(
-        @ApiParam(hidden=true) 
+        @ApiParam(hidden=true)
         @AuthenticationPrincipal String email,
         @Valid @RequestBody PostBoardDto requestBody
     ) {
@@ -68,7 +69,7 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="댓글 작성", notes="Request Header Authorization에 Bearer JWT를 포함, Request Body에 boardNumber, content를 포함해 요청을 하면 성공시 게시물 전체 데이터 반환 실패 시 실패 메시지 반환")
+    @ApiOperation(value="댓글 작성", notes="Request Header Authorization에 Bearer JWT를 포함하고 Request Body에 boardNumber, content를 포함하여 요청을 하면, 성공시 게시물 전체 데이터를 반환, 실패시 실패 메세지를 반환")
     @PostMapping(POST_COMMENT)
     public ResponseDto<PostCommentResponseDto> postComment(
         @ApiParam(hidden=true)
@@ -79,21 +80,23 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="좋아요", notes="Requset Header Authorization에 Bearer JWT를 포함, Request Body에 boardNumber를 포함해 요청을 하면 성공 시 게시물 전체 데이터를 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="좋아요 기능", notes="Request Header Authorization에 Bearer JWT를 포함하고 Request Body에 boardNumber를 포함하여 요청을 하면, 성공시 게시물 전체 데이터를 반환, 실패시 실패 메세지를 반환")
     @PostMapping(LIKE)
-    public ResponseDto<com.nemnem.board.service.LikeResponseDto> like(
+    public ResponseDto<LikeResponseDto> like(
+        @ApiParam(hidden=true)
         @AuthenticationPrincipal String email, 
         @Valid @RequestBody LikeDto requestBody
     ) {
-        ResponseDto<com.nemnem.board.service.LikeResponseDto> response = boardService.like(email, requestBody);
+        ResponseDto<LikeResponseDto> response = boardService.like(email, requestBody);
         return response;
     }
 
-    @ApiOperation(value="특정 게시물 가져오기", notes="Path Variable에 boardNumber를 포함하여 요청을 하면 성공 시 게시물 전체 데이터를 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="특정 게시물 가져오기", notes="Path Variable에 boardNumber를 포함하여 요청을 하면, 성공시 게시물 전체 데이터를 반환, 실패시 실패 메세지를 반환")
     @GetMapping(GET_BOARD)
     public ResponseDto<GetBoardResponseDto> getBoard(
-        @ApiParam(value="게시물 번호", example="1", required=true)    
-        @PathVariable("boardNumber") int boardNumber) {
+        @ApiParam(value="게시물 번호", example="1", required=true)
+        @PathVariable("boardNumber") int boardNumber
+    ) {
         ResponseDto<GetBoardResponseDto> response = boardService.getBoard(boardNumber);
         return response;
     }
@@ -105,30 +108,34 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="본인 작성 게시물 리스트 가져오기", notes="Request Header Authorization에 Bearer JWT를 포함하여 요청을 하면 성공 시 요청자가 작성한 게시물 전체 리스트를 최신순으로 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="본인 작성 게시물 리스트 가져오기", notes="Request Header Authorization에 Bearer JWT를 포함하여 요청을 하면, 성공시 요청자가 작성한 게시물 전체 리스트를 최신순으로 반환, 실패시 실패 메세지를 반환")
     @GetMapping(GET_MY_LIST)
     public ResponseDto<List<GetMyListResponseDto>> getMyList(
         @ApiParam(hidden=true)
-        @AuthenticationPrincipal String email) {
+        @AuthenticationPrincipal String email
+    ) {
         ResponseDto<List<GetMyListResponseDto>> response = boardService.getMyList(email);
         return response;
     }
 
-    @ApiOperation(value="인기 검색어 리스트 가져오기", notes="요청을 하면 성공 시 가장 많이 검색한 15개의 검색어 리스트를 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="인기 검색어 리스트 가져오기", notes="요청을 하면, 성공시 가장 많이 검색한 15개의 검색어 리스트를 반환, 실패시 실패 메세지를 반환")
     @GetMapping(GET_TOP15_SEARCH_WORD)
     public ResponseDto<GetTop15SearchWordResponseDto> getTop15SearchWord() {
         ResponseDto<GetTop15SearchWordResponseDto> response = boardService.getTop15SearchWord();
         return response;
     }
 
-    @ApiOperation(value="검색어에 해당하는 연관 검색어 리스트 가져오기", notes="Path Variable에 SearchWord를 포함하여 요청하면, 성공시 해당하는 검색어와 관련된 검색어 중 가장 많이 검색한 15개 검색어 리스트 반환. 실패 시 실패 메시지 반환")
+    @ApiOperation(value="검색어에 해당하는 연관 검색어 리스트 가져오기", notes="Path Variable에 SearchWord를 포함하여 요청하면, 성공시 해당하는 검색어와 관련된 검색어 중 가장 많이 검색한 15개 검색어 리스트를 반환, 실패시 실패 메세지를 반환")
     @GetMapping(GET_TOP15_RELATED_SEARCH_WORD)
-    public ResponseDto<GetTop15RelatedSearchWordResponseDto> getTop15RelatedSearchWord(@PathVariable("searchWord") String searchWord) {
+    public ResponseDto<GetTop15RelatedSearchWordResponseDto> getTop15RelatedSearchWord(
+        @ApiParam(value="검색어", example="아침", required=true)
+        @PathVariable("searchWord") String searchWord
+    ) {
         ResponseDto<GetTop15RelatedSearchWordResponseDto> response = boardService.getTop15RelatedSearchWord(searchWord);
         return response;
     }
 
-    @ApiOperation(value="검색어에 대한 게시물 리스트 가져오기", notes="Path Variable에 searchWord와 previousSearchWord를 포함하여 요청을 하면 성공 시 검색어에 해당하는 게시물 리스트를 최신순으로 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="검색어에 대한 게시물 리스트 가져오기", notes="Path Variable에 searchWord와 previousSearchWord를 포함하여 요청을 하면, 성공시 검색어에 해당하는 게시물 리스트를 최신순으로 반환, 실패시 실패 메세지를 반환")
     @GetMapping(value={GET_SEARCH_LIST_PREVIOUS, GET_SEARCH_LIST})
     public ResponseDto<List<GetSearchListResponseDto>> getSearchList(
         @ApiParam(value="검색어", example="아침", required=true)
@@ -140,7 +147,7 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="특정 게시물 수정", notes="Request Header Authorization에 Bearer JWT를 포함하고 Request Body에 boardNumber, title, content, boardImageUrl을 포함하여 요청하면 성공 시 게시물 전체 데이터 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="특정 게시물 수정", notes="Request Header Authorization에 Bearer JWT를 포함하고 Request Body에 boardNumber, title, content, boardImageUrl을 포함하여 요청을 하면, 성공시 게시물 전체 데이터를 반환, 실패시 실패 메세지를 반환")
     @PatchMapping(PATCH_BOARD)
     //? patch이기 때문에 RequestBody
     //? 작성한 사람인지 판단을 해야함 AuthenticationPrincipal email을 받아옴
@@ -154,7 +161,7 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="특정 게시물 삭제", notes="Request Header Authorization에 Bearer JWT를 포함하고 Path Variable에 boardNumber를 포함하여 요청하면 성공 시 true를 반환, 실패 시 실패 메시지 반환")
+    @ApiOperation(value="특정 게시물 삭제", notes="Request Header Authorization에 Bearer JWT를 포함하고 Path Variable에 boardNumber를 포함하여 요청을 하면, 성공시 true를 반환, 실패시 실패 메세지를 반환")
     @DeleteMapping(DELETE_BOARD)
     //? 토큰이 누군지 확인 하기 위해 AuthenticationPrincipal 
     public ResponseDto<DeleteBoardResponseDto> deleteBoard(
