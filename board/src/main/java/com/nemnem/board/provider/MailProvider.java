@@ -14,10 +14,10 @@ public class MailProvider {
         
         try{
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom("보내는 사람의 메일");
-            simpleMailMessage.setTo("받는 사람의 메일");
-            simpleMailMessage.setSubject("제목");
-            simpleMailMessage.setText("html 형식의 내용"); 
+            simpleMailMessage.setFrom("1223020@donga.ac.kr");
+            simpleMailMessage.setTo("dlackdtjq123@naver.com");
+            simpleMailMessage.setSubject("Test");
+            simpleMailMessage.setText("<p style='color: red;'>html 형식의 내용</p>"); 
             javaMailSender.send(simpleMailMessage);
 
         } catch(Exception exception) {

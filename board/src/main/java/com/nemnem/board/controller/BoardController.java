@@ -33,8 +33,10 @@ import com.nemnem.board.dto.response.board.PostBoardResponseDto;
 import com.nemnem.board.dto.response.board.PostCommentResponseDto;
 import com.nemnem.board.service.BoardService;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 
+@ApiModel(value="게시물 모듈")
 @RestController
 @RequestMapping(ApiPattern.BOARD)
 public class BoardController {
