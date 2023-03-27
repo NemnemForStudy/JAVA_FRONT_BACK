@@ -13,14 +13,14 @@ interface ISignUpStore {
     email: string;
     password: string;
     passwordCheck: string;
-    nickName: string;
+    nickname: string;
     telNumber: string;
     address: string;
     addressDetail: string;
     setEmail: (str: string) => void;
     setPassword: (str: string) => void;
     setPasswordCheck: (str: string) => void;
-    setNickName: (str: string) => void;
+    setNickname: (str: string) => void;
     setTelNumber: (str: string) => void
     setAddress: (str: string) => void;
     setAddressDetail: (str: string) => void;
@@ -31,14 +31,14 @@ const useStore = create<ISignUpStore>((set) => ({
     email: '',
     password: '',
     passwordCheck: '',
-    nickName: '',
+    nickname: '',
     telNumber: '',
     address: '',
     addressDetail: '',
     setEmail: (email) => set((state) => ({...state, email})),
     setPassword: (password) => set((state) => ({...state, password})),
     setPasswordCheck: (passwordCheck) => set((state) => ({...state, passwordCheck})),
-    setNickName: (nickName) => set((state) => ({...state, nickName})),
+    setNickname: (nickname) => set((state) => ({...state, nickname})),
     setTelNumber: (telNumber) => set((state) => ({...state, telNumber})),
     setAddress: (address) => set((state) => ({...state, address})),
     setAddressDetail: (addressDetail) => set((state) => ({...state, addressDetail})),
@@ -75,28 +75,28 @@ export default useStore;
 //? ...객체 : 객체에서 지정한 요소를 제외하고 남은 요소를 객체로 묶음 처리 함
 //? const { 요소1, ...묶음객체명 } = 객체;
 
-const mainObj = {
-    a: 0,
-    b: 1,
-    c: 2,
-    d: 3,
-}
+// const mainObj = {
+//     a: 0,
+//     b: 1,
+//     c: 2,
+//     d: 3,
+// }
 
-const { a, ...subObj } = mainObj;
-//? subObj = { b: 1, c: 2, d: 3 };
+// const { a, ...subObj } = mainObj;
+// //? subObj = { b: 1, c: 2, d: 3 };
 
-const setMainObjA = (a: number) => {
-    // mainObj.a = a;
-    const modifiedObj = {...mainObj, a};
-    return modifiedObj;
-}
-const setMainObjB = (b: number) => {
-    // mainObj.a = a;
-    const modifiedObj = {...mainObj, b};
-    return modifiedObj;
-}
+// const setMainObjA = (a: number) => {
+//     // mainObj.a = a;
+//     const modifiedObj = {...mainObj, a};
+//     return modifiedObj;
+// }
+// const setMainObjB = (b: number) => {
+//     // mainObj.a = a;
+//     const modifiedObj = {...mainObj, b};
+//     return modifiedObj;
+// }
 
-const tmpObj = setMainObjA(10);
+// const tmpObj = setMainObjA(10);
 // {
 //     a: 10,
 //     b: 1,
