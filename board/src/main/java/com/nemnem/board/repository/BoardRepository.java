@@ -19,4 +19,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     //? 찾아서 검색을 한다고 하면 findByBoardTitleContainsOrBoardContentContainsOrderByBoardWriteDatetimeDesc
     public List<BoardEntity> findByBoardTitleContainsOrBoardContentContainsOrderByBoardWriteDatetimeDesc(String boardTitle, String boardContent);
 
+    //? 상위 3개 게시물 들고오기
+    public List<BoardEntity> findTop3ByOrderByLikeCountDesc();
 }
