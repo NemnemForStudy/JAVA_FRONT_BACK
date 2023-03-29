@@ -15,7 +15,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 import { useSignUpStore } from 'src/stores';
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { SignUpDto } from "src/apis/request/auth";
 import  ResponseDto  from "src/apis/response";
 import { SignUpResponseDto } from "src/apis/response/auth";
@@ -151,23 +151,24 @@ export default function SignUpCardView({ setLoginView }: Props) {
     //? then - 결과를 기다리지 않고 다음 코드 실행. 만약 에러가 발생하면
     //? catch - catch로 에러를 받을 수 있음.
     axios.post(SIGN_UP_URL, data)
-    .then((response => {
-      //? ResponseDto는 src/apis/responseDto로 받아야함.
-      //? data의 타입은 any이기 때문에 어떠한 타입을 받아올 수 있지만
-      //? as를 씀으로써 ResponseDto<SignUpResponseDto> 강제로 이 타입을 변환할 있음.
-      const { result, message, data } = response.data as ResponseDto<SignUpResponseDto>;
-      if(result) setLoginView(true);
-      else alert(message);
-    }))
-    .catch((error) => {
-      console.log(error.response.status);
-    });
+    .then((response => {signUpResponseHandler(response)}))
+    .catch((error) => {signUpErrorHandler(error)});
 
     //? 기다렸다가 작업 처리
     //? await(비동기) - 동작을 하다가 동기처리로 바꾸겠다
     //? 동기처리로 바꿔주겠다 하면 동기 함수로 바꿔줘야한다.
     // const response = await axios.post("http://localhost:4040/auth/sign-up", data);
 
+  }
+
+  const signUpResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<SignUpResponseDto>;
+      if(result) setLoginView(true);
+      else alert(message);
+  }
+
+  const signUpErrorHandler = (error: any) => {
+    console.log(error.response.status);
   }
 
   return (

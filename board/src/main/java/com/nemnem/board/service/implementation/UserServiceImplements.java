@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.nemnem.board.common.constant.ResponseMessage;
 import com.nemnem.board.dto.request.user.PatchProfileDto;
 import com.nemnem.board.dto.response.ResponseDto;
+import com.nemnem.board.dto.response.user.GetUserResponseDto;
 import com.nemnem.board.dto.response.user.PatchProfileResponseDto;
 import com.nemnem.board.entity.UserEntity;
 import com.nemnem.board.repository.UserRepository;
@@ -40,6 +41,23 @@ public class UserServiceImplements implements UserService {
 
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
 
+    }
+
+    @Override
+    public ResponseDto<GetUserResponseDto> getUser(String email) {
+        GetUserResponseDto data = null;
+
+        try {
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if(userEntity == null) return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_USER);
+
+            data = new GetUserResponseDto(userEntity);
+
+        } catch(Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
+        }
+        return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
     }
 
 }

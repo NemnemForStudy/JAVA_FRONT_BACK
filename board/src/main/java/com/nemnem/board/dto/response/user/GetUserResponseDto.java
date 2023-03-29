@@ -8,11 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="유저 프로필 URL 수정 Response Body - data")
+@ApiModel(value="유저 정보 불러오기 Response Body - data")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchProfileResponseDto {
+public class GetUserResponseDto {
     @ApiModelProperty(value="사용자 이메일", example="Nemnem@naver.com", required=true)
     private String email;
 
@@ -28,7 +28,7 @@ public class PatchProfileResponseDto {
     @ApiModelProperty(value="사용자 프로필 URL", example="http://", required=true)
     private String profile;
 
-    public PatchProfileResponseDto(UserEntity userEntity) {
+    public GetUserResponseDto(UserEntity userEntity) {
         this.email = userEntity.getEmail();
         this.nickname = userEntity.getNickname();
         this.telNumber = userEntity.getTelNumber();
