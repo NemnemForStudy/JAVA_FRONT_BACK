@@ -33,4 +33,11 @@ export interface ILikeUser {
     likeUserNickname: string;
 }
 
+export interface ICommentItem {
+    commentUserProfile: string;
+    commentUserNickname: string;
+    commentContent: string;
+    commentDatetime: string;
+}
+
 export type { Board, Comment, Liky, User };

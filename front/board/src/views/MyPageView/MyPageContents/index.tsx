@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 
 export default function MyPageContents() {
 
-  const { boardList, viewList, pageNumber, setBoardList, onPageHandler, COUNT } = usePagingHook();
+  const { boardList, viewList, pageNumber, setBoardList, onPageHandler, COUNT } = usePagingHook(5);
   //? 로그인 한 상태일 때 user정보를 가져올 수 있도록
   //? 스토어에서 user 상태를 가져옴
   const { user } = useUserStore();
