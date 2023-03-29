@@ -1,4 +1,4 @@
-import { ILikeUser, IPreviewItem, IUser } from "src/interfaces";
+import { ICommentItem, ILikeUser, IPreviewItem, IUser } from "src/interfaces";
 
 export const TOP3: IPreviewItem[] = [
     {
@@ -548,4 +548,139 @@ export const LIKE_LIST: ILikeUser[] = [
         likeUserProfile: 'https://w.namu.la/s/2bedbc7ea840b0006ff91c89a0c0fc26d934f29e2f7a83aeb244cae1aef84a39f7c3ffa56217fc1d50e482e46b6bbed3a2dc508f57a910b8c661bfb26dd786c2449e0c2c532b6c1759a2864976047279c59818f55f4021442db91e05cef20bb1',
         likeUserNickname: 'nemnem'
     }
+];
+
+export const COMMENT_LIST: ICommentItem[] = [
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
+    {
+        commentUserProfile: '',
+        commentUserNickname: 'Nemnem',
+        commentContent: '안녕하세요 안녕하세요',
+        commentDatetime: '2023-02-23 14:49'
+    },
 ]

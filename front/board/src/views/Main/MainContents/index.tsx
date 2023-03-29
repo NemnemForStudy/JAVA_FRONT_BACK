@@ -10,7 +10,6 @@ import { usePagingHook } from 'src/hooks';
 import axios, { AxiosResponse } from 'axios';
 import ResponseDto from 'src/apis/response';
 import { GetListResponseDto } from 'src/apis/response/board';
-import { GET_LIST_URL } from 'src/constants/api';
 
 export default function MainContents() {
 

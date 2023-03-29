@@ -1,17 +1,21 @@
-import { Avatar, Box, Card, colors, Divider, Icon, IconButton, MenuItem, Typography } from '@mui/material'
-import { useState, MouseEvent, useEffect } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { Avatar, Box, Button, Card, Divider, IconButton, Menu, Input, MenuItem, Pagination, Stack, Typography } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Menu } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
-import { useNavigate, useParams } from 'react-router';
-import { BOARD_LIST, LIKE_LIST } from 'src/mock';
-import { ILikeUser, IPreviewItem } from 'src/interfaces';
-import { useUserStore } from 'src/stores';
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import Pagination from '@mui/material/Pagination';
+
+import CommentListItem from 'src/components/CommentListItem';
 import LikeListItem from 'src/components/LikeListItem';
+import { usePagingHook } from 'src/hooks';
+import { useUserStore } from 'src/stores';
+import { ICommentItem, ILikeUser, IPreviewItem } from 'src/interfaces';
+import { getPageCount } from 'src/utils';
+import { BOARD_LIST, COMMENT_LIST, LIKE_LIST } from 'src/mock';
 
 export default function BoardDetailView() {
 
@@ -34,6 +38,8 @@ export default function BoardDetailView() {
     
     //? 기억하자 배열을 들고올 때는 interface이름 + []
     const [LikeList, setLikeList] = useState<ILikeUser[]>([]);
+
+    const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
 
     //? boardNumber 데이터를 꺼내올거다.
     const { boardNumber } = useParams();
@@ -122,30 +128,30 @@ export default function BoardDetailView() {
                 {/* //? board?.img로 하니 에러가 났다. 조건을 추가해주자*/}
                 {board?.img && (<Box sx={{ width: '100%', mt: '20px'}} component='img' src={board?.img} />)}
             </Box>
-                <Box sx={{ display: 'flex', mt: '20px' }}>
-                    <Box sx={{ display: 'flex', mr: '20px' }}>
-                        { likeState ? 
-                            ( <FavoriteOutlinedIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => setLikeState(!likeState)}/> ) : 
-                            (<FavoriteBorderIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} onClick={() => setLikeState(!likeState)} />) 
+            <Box sx={{ display: 'flex', mt: '20px' }}>
+                <Box sx={{ display: 'flex', mr: '20px' }}>
+                    { likeState ? 
+                        (<ChatOutlinedIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => setLikeState(!likeState)}/> ) : 
+                        (<FavoriteBorderIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} onClick={() => setLikeState(!likeState)} />) 
+                    }
+                    <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.likeCount}</Typography>
+                    <IconButton sx={{ height: '24px', width: '24px' }} onClick={() => setOpenLike(!openLike)}>
+                        {openLike ?
+                            ( <ArrowDropUpOutlinedIcon />):
+                            ( <ArrowDropDownOutlinedIcon />)
                         }
-                        <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.likeCount}</Typography>
-                        <IconButton sx={{ height: '24px', width: '24px' }} onClick={() => setOpenLike(!openLike)}>
-                            {openLike ?
-                                ( <ArrowDropUpOutlinedIcon />):
-                                ( <ArrowDropDownOutlinedIcon />)
-                            }
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: 'flex', mr : '20px'}}>
-                        <ChatOutlinedIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} />
-                        <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.commentCount}</Typography>
-                        <IconButton sx={{ height: '24px', width: '24px' }} onClick={() => setOpenComment(!openComment)}>
-                            {openComment ?
-                                (<ArrowDropUpOutlinedIcon />):
-                                (<ArrowDropDownOutlinedIcon />)
-                            }
-                        </IconButton>
-                    </Box>
+                    </IconButton>
+                </Box>
+                <Box sx={{ display: 'flex', mr : '20px'}}>
+                    <ChatOutlinedIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} />
+                    <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.commentCount}</Typography>
+                    <IconButton sx={{ height: '24px', width: '24px' }} onClick={() => setOpenComment(!openComment)}>
+                        {openComment ?
+                            (<ArrowDropUpOutlinedIcon />):
+                            (<ArrowDropDownOutlinedIcon />)
+                        }
+                    </IconButton>
+                </Box>
             </Box>
         </Box>
         {openLike && (
@@ -159,13 +165,30 @@ export default function BoardDetailView() {
                 </Card>
             </Box>
         )}
-        {openComment && (
-            <Box sx={{ mt: '20px' }}>
-                <Card variant='outlined' sx={{ p: '20px' }}>
-                    <Typography>댓글 {board?.commentCount}</Typography>
-                </Card>
+        <Box>
+        { openComment && (
+            <Box>
+                <Box sx={{ p: '20px' }}>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>댓글 {boardList.length}</Typography>
+                    <Stack sx={{ p: '20px 0px' }} spacing={3.75}>
+                        {viewList.map((commentItem) => (<CommentListItem item={commentItem as ICommentItem} />))}
+                    </Stack>
+                </Box>
+                <Divider />
+                <Box sx={{ p: '20px 0px', display: 'flex', justifyContent: 'center' }}>
+                    <Pagination page={pageNumber} count={getPageCount(boardList, COUNT)} onChange={(event, value) => onPageHandler(value)} />
+                </Box>
+                <Box>
+                    <Card variant='outlined' sx={{ p: '20px' }}>
+                        <Input minRows={3} multiline disableUnderline fullWidth />
+                        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                            <Button sx={{ p: '4px 23px', backgroundColor: '#000000', fontSize: '14px', fontWeight: 400, color: '#ffffff', borderRadius: '46px' }}>댓글달기</Button>
+                        </Box>
+                    </Card>
+                </Box>
             </Box>
-        )}
+        ) }
+        </Box>
     </Box>
   )
 }

@@ -11,12 +11,12 @@ import { useUserStore } from 'src/stores';
 
 export default function NavigationBar() {
 
-  const [content, setContent] = useState<string>('');
-  
-  const { user } = useUserStore();
-
   const navigator = useNavigate();
   const path = useLocation();
+
+  const { user } = useUserStore();
+
+  const [content, setContent] = useState<string>('');
 
   const onSearchHandler = () => {
     if (!content.trim()) {
@@ -38,7 +38,7 @@ export default function NavigationBar() {
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block', color: '#000000' } }}
             onClick={() => navigator('/')}
           >
-            Nemnem's Board
+            Hoons Board
           </Typography>
           <Box sx={{ display: 'flex' }}>
             <FormControl variant='outlined' sx={{ mr: '10px' }}>
@@ -59,9 +59,13 @@ export default function NavigationBar() {
             {path.pathname !== '/auth' && 
               (user ? 
                 (
-                  <Button variant='outlined' sx={{borderColor: '#000000', color: '#000000'}} onClick={() => navigator('/myPage')}>마이페이지</Button>
+                  <Button variant='outlined' sx={{borderColor: '#000000', color: '#000000'}} onClick={() => navigator('/myPage')}>
+                    마이페이지
+                  </Button>
                 ) : (
-                  <Button variant='contained' sx={{backgroundColor: '#000000'}} onClick={() => navigator('/auth')}>로그인</Button>
+                  <Button variant='contained' sx={{backgroundColor: '#000000'}} onClick={() => navigator('/auth')}>
+                    로그인
+                  </Button>
                 )
               )
             }

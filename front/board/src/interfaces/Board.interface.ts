@@ -10,6 +10,6 @@ interface Board {
     writerEmail: string;
     writerNickname: string;
     writerProfileUrl?: string | null;
-}
-
-export default Board;
+  }
+  
+  export default Board;

@@ -10,8 +10,8 @@ import BoardListItem from 'src/components/BoardListItem';
 import { getPageCount } from 'src/utils';
 import { usePagingHook } from 'src/hooks';
 import axios, { AxiosResponse } from 'axios';
-import { GetSearchListResponseDto } from 'src/apis/response/board';
 import ResponseDto from 'src/apis/response';
+import { GetSearchListResponseDto } from 'src/apis/response/board';
 import { GET_SEARCH_LIST_URL } from 'src/constants/api';
 
 export default function SearchView() {
@@ -21,17 +21,17 @@ export default function SearchView() {
 
     const getSearchList = () => {
         axios.get(GET_SEARCH_LIST_URL(content as string))
-            .then((response) => getSearchListHandler(response))
-            .catch((error) => getSearchErrorHandler(error));
+            .then((response) => getSearchListResponseHandler(response))
+            .catch((error) => getSearchListErrorHandler(error));
     }
 
-    const getSearchListHandler = (response: AxiosResponse<any, any>) => {
+    const getSearchListResponseHandler = (response: AxiosResponse<any, any>) => {
         const { result, message, data } = response.data as ResponseDto<GetSearchListResponseDto[]>;
-        if(!result || data === null) return;
+        if (!result || data == null) return;
         setBoardList(data);
     }
 
-    const getSearchErrorHandler = (error: any) => {
+    const getSearchListErrorHandler = (error: any) => {
         console.log(error.message);
     }
 
@@ -72,4 +72,3 @@ export default function SearchView() {
         </Box>
     </Box>
   )
-}

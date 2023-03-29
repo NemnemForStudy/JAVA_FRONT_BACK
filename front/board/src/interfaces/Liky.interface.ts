@@ -1,6 +1,6 @@
 interface Liky {
     boardNumber: number;
-    userProfoleUrl?: string | null;
+    userProfileUrl?: string | null;
     userNickname: string;
 }
 

@@ -5,6 +5,7 @@ import User from './User.interface';
 
 //? 인터페이스 관리
 export interface IPreviewItem {
+    boardNumber: number;
     img: string | null;
     writerProfile: string;
     writerNickname: string;
@@ -14,8 +15,6 @@ export interface IPreviewItem {
     likeCount: number;
     commentCount: number;
     viewCount: number;
-
-    boardNumber: number;
 }
 
 export interface IUser {
