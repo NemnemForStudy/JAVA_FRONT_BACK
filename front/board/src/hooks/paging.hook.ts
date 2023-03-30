@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { GetListResponseDto, GetMyListResponseDto, GetSearchListResponseDto } from "src/apis/response/board";
-import { ICommentItem, IPreviewItem } from "src/interfaces";
+import { Comment, ICommentItem, IPreviewItem } from "src/interfaces";
 import { BOARD_LIST } from "src/mock";
 
 const usePagingHook = (COUNT: number) => {
 
-  const [boardList, setBoardList] = useState<(GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | ICommentItem)[]>([]);
-  const [viewList, setViewList] = useState<(GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | ICommentItem)[]>([]);
+  const [boardList, setBoardList] = useState<(GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | Comment)[]>([]);
+  const [viewList, setViewList] = useState<(GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | Comment)[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   //? 한 페이지에 5개의 게시물을 보여주고자 할 때
@@ -16,7 +16,7 @@ const usePagingHook = (COUNT: number) => {
   const onPageHandler = (page: number) => {
     setPageNumber(page);
   
-    const tmpList: (GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | ICommentItem)[] = [];
+    const tmpList: (GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto | Comment)[] = [];
 
     const startIndex = COUNT * (page - 1);
     const endIndex = COUNT * page - 1;
@@ -28,19 +28,6 @@ const usePagingHook = (COUNT: number) => {
 
     setViewList(tmpList);
   }
-
-  // useEffect(() => {
-  //   //# array.filter(요소 => 조건)
-  //   //? 특정한 조건에 부합하는 요소만 모아서 새로운 배열로 만들어 반환하는 메서드
-  //   //# string.inclues(검색할 문자열)
-  //   //? 해당 문자열에서 검색할 문자열이 존재한다면 true, 아니면 false를 반환하는 메서드
-  //   const tmp = !content ? BOARD_LIST : BOARD_LIST.filter((board) => board.boardTitle.includes(content as string));
-  //   setBoardList(tmp);
-
-  //   //? SELECT * FROM Board ORDER BY writeDate DESC;
-  //   //? SELECT * FROM Board WHERE boardTitle LIKE '%content%' ORDER BY writeDate DESC;
-
-  // }, [content]);
 
   useEffect(() => {
     onPageHandler(pageNumber);

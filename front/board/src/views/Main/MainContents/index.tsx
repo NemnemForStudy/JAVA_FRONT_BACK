@@ -23,9 +23,15 @@ export default function MainContents() {
       .catch((error) => getListErrorHandler(error));
   }
 
+  const getTop15SearchWord = () => {
+    axios.get(GET_TOP15_SEARCH_WORD_URL)
+      .then((response) => getTop15SearchWordResponseHandler(response))
+      .catch((error) => getTop15SearchWordErrorHandler(error));
+  }
+
   const getListResponseHandler = (response: AxiosResponse<any, any>) => {
-    const {result, message, data} = response.data as ResponseDto<GetListResponseDto[]>;
-    if(!result || data === null) return;
+    const { result, message, data } = response.data as ResponseDto<GetListResponseDto[]>;
+    if (!result || data === null) return;
     setBoardList(data);
   }
 
@@ -33,15 +39,9 @@ export default function MainContents() {
     console.log(error.message);
   }
 
-  const getTop15SearchWord = (response: AxiosResponse<any, any>) => {
-    axios.get(GET_TOP15_SEARCH_WORD_URL)
-      .then((response) => getTop15SearchWordResponseHandler(response))
-      .catch((error) => getTop15SearchWordErrorHandler(error));
-  }
-
   const getTop15SearchWordResponseHandler = (response: AxiosResponse<any, any>) => {
-    const { result, message, data } = response.data as ResponseDto<GetTop15SearchWordResponseDto[]>
-    if(!result || !data) return;
+    const { result, message, data } = response.data as ResponseDto<GetTop15SearchWordResponseDto>
+    if (!result || !data) return;
     setPopularList(data.top15SearchWordList);
   }
 
@@ -67,7 +67,7 @@ export default function MainContents() {
             </Stack>
           </Grid>
           <Grid item sm={12} md={4}>
-            <PopularCard title="인기 검색어" popularList={popularList}/>
+            <PopularCard title="인기 검색어" popularList={popularList} />
           </Grid>
         </Grid>
       </Box>
@@ -77,4 +77,3 @@ export default function MainContents() {
     </Box>
   )
 }
-

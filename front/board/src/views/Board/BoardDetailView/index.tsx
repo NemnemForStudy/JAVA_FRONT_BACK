@@ -16,9 +16,9 @@ import { Board, Comment, ICommentItem, ILikeUser, IPreviewItem, Liky } from 'src
 import { getPageCount } from 'src/utils';
 import { BOARD_LIST, COMMENT_LIST, LIKE_LIST } from 'src/mock';
 import axios, { AxiosResponse } from 'axios';
-import { GetBoardResponseDto } from 'src/apis/response/board';
 import ResponseDto from 'src/apis/response';
 import { GET_BOARD_URL } from 'src/constants/api';
+import { GetBoardResponseDto } from 'src/apis/response/board';
 
 export default function BoardDetailView() {
 
@@ -29,17 +29,18 @@ export default function BoardDetailView() {
     const[menuFlag, setMenuFlag] = useState<boolean>(false);
     //? open이 true false형태이니 boolean으로 처음은 false
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+    //? 일단 null이 가능하게
     const [board, setBoard] = useState<Board | null>(null);
 
     //? 좋아요 눌렀을 때 색 변경
     const [likeState, setLikeState] = useState<boolean>(false);
     //? 누를때마다 좋아요 누른 사람이 나왔다가 사라짐.
     const [openLike, setOpenLike] = useState<boolean>(false);
-    const [openComment, setOpenComment] = useState<boolean>(false);
-    const [commentList, setCommentList] = useState<Comment[]>([]); 
+    const [likeList, setLikeList] = useState<Liky[]>([]);
     
     //? 기억하자 배열을 들고올 때는 interface이름 + []
-    const [LikeList, setLikeList] = useState<Liky[]>([]);
+    const [openComment, setOpenComment] = useState<boolean>(false);
 
     const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
 
@@ -50,31 +51,36 @@ export default function BoardDetailView() {
     //? user 데이터 꺼내오기
     const { user } = useUserStore();
 
+    //? 조회수 1 증가 시키기
+    let isLoad = false;
+
     const getBoard = () => {
         axios.get(GET_BOARD_URL(boardNumber as string))
             .then((response) => getBoardResponseHandler(response))
-            .catch((error) => getBoardErrorHandler(error))
+            .catch((error) => getBoardErrorHandler(error));
     }
 
     const getBoardResponseHandler = (response: AxiosResponse<any, any>) => {
-        const { result, message, data } = response.data as ResponseDto<GetBoardResponseDto[]>;
-        if(!result || !data) {
+        const { result, message, data } = response.data as ResponseDto<GetBoardResponseDto>
+        if (!result || !data) {
             alert(message);
             navigator('/');
             return;
         }
         const { board, commentList, likeList } = data;
         setBoard(board);
-        setCommentList(commentList);
+        // 댓글 리스트를 3개까지 보여주도록 하는 로직
+        setBoardList(commentList);
         setLikeList(likeList);
+        const owner = user !== null && board.writerEmail === user.email;
+        setMenuFlag(owner);
     }
 
     const getBoardErrorHandler = (error: any) => {
         console.log(error.message);
     }
 
-    //? event 받을 적에 event 타입을 모른다. 그럴때는 마우스 올리면 타입이 나온다.
-    const onMenuClickHandler = (event : MouseEvent<HTMLButtonElement>) => { 
+    const onMenuClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
         setAnchorElement(event.currentTarget);
         setMenuOpen(true);
     }
@@ -84,39 +90,15 @@ export default function BoardDetailView() {
         setMenuOpen(false);
     }
 
-
     useEffect(() => {
-        //? 1. 입력받은 파라미터(boardNumber)가 존재하는지 검증
+        if(isLoad) return;
+        //? boardNumber가 존재하는지 검증
         if (!boardNumber) {
-            navigator('/'); //? <- main으로 돌려보냄
-            return;
-        }
-        
-        //? 2. BOARD_LIST에서 boardNumber에 해당하는 board를 가져옴
-        //? 동일한 녀석을 찾아옴
-        const board = BOARD_LIST.find((boardItem) => boardItem.boardNumber === parseInt(boardNumber));
-        
-        //? 3. 위의 코드의 검색한 결과가 존재하는지 검증
-        if (!board) {
             navigator('/');
             return;
         }
-
-        //? 5
-        setLikeList(LIKE_LIST);
-
-        //? 4. user가 존재한다면 아래 코드 실행해서 setMenuFlag를 true로
-        // if (user && user.nickname === board.writerNickname) {
-        //     setMenuFlag(true);
-        //     return;
-        // }
-
-        //? 위의 코드를 아래 방식으로도 사용이 가능하다.
-        const owner = user && user.nickname === board.writerNickname;
-        setMenuFlag(owner as boolean);
-
-        setBoard(board);
-
+        isLoad = true;
+        getBoard();
     }, [])
 
     return (
@@ -128,10 +110,10 @@ export default function BoardDetailView() {
                 <Typography sx={{ fontSize: '32px', fontWeight: 500 }}>{board?.boardTitle}</Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px'}}>
                     <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                        <Avatar src={board?.writerProfile} sx={{ height: '32px', width: '32px', mr: '8px' }} />
+                        <Avatar src={board?.writerProfileUrl ? board?.writerProfileUrl : ''} sx={{ height: '32px', width: '32px', mr: '8px' }} />
                         <Typography sx={{ mr: '8px', fontSize: '16px', fontWeight: 500 }}>{board?.writerNickname}</Typography>
                         <Divider sx={{ mr: '8px' }} orientation='vertical' variant='middle' flexItem/>
-                        <Typography sx={{ mr: '8px', fontSize: '16px', fontWeight: 400, opacity: 0.4 }}>{board?.writeDate}</Typography> 
+                        <Typography sx={{ mr: '8px', fontSize: '16px', fontWeight: 400, opacity: 0.4 }}>{board?.boardWriteDatetime}</Typography> 
                         </Box>
                         {menuFlag && (
                             <IconButton onClick={(event) => onMenuClickHandler(event)}>
@@ -152,7 +134,7 @@ export default function BoardDetailView() {
             <Box>
                 <Typography sx={{ fontSize: '18px', fontWeight: 500, opacity: 0.7 }}>{board?.boardContent}</Typography>
                 {/* //? board?.img로 하니 에러가 났다. 조건을 추가해주자*/}
-                {board?.img && (<Box sx={{ width: '100%', mt: '20px'}} component='img' src={board?.img} />)}
+                {board?.boardImgUrl && (<Box sx={{ width: '100%', mt: '20px'}} component='img' src={board?.boardImgUrl ? board?.boardImgUrl : ''} />)}
             </Box>
             <Box sx={{ display: 'flex', mt: '20px' }}>
                 <Box sx={{ display: 'flex', mr: '20px' }}>
@@ -186,7 +168,7 @@ export default function BoardDetailView() {
                     <Typography>좋아요 {board?.likeCount}</Typography>
                     <Box sx={{ m: '20px 0px' }}>
                         {/* //? map할 때도 헷갈리니 생각잘 해두자. */}
-                        { LikeList.map((likeUser) => (<LikeListItem likeUser={likeUser} />))}
+                        { likeList.map((likeUser) => (<LikeListItem likeUser={likeUser} />))}
                     </Box>
                 </Card>
             </Box>
@@ -197,7 +179,7 @@ export default function BoardDetailView() {
                 <Box sx={{ p: '20px' }}>
                     <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>댓글 {boardList.length}</Typography>
                     <Stack sx={{ p: '20px 0px' }} spacing={3.75}>
-                        {viewList.map((commentItem) => (<CommentListItem item={commentItem as ICommentItem} />))}
+                        {viewList.map((commentItem) => (<CommentListItem item={commentItem as Comment} />))}
                     </Stack>
                 </Box>
                 <Divider />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { Avatar, Box, Card, CardActionArea, Chip, Typography } from '@mui/material'
 import { IPreviewItem } from 'src/interfaces'
@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom';
 interface Props {
     title: string;
     popularList: string[];
-}
+  }
 
-export default function PopularCard({ title, popularList }: Props) {
+  export default function PopularCard({ title, popularList }: Props) {
   
     const navigator = useNavigate();
-
+  
     return (
       <Card variant='outlined' sx={{ p: '24px 12px 26px 24px' }}>
           <Typography sx={{ fontSize: '24px', fontWeight: 500 }}>{title}</Typography>

@@ -5,14 +5,19 @@ import java.util.List;
 
 import com.nemnem.board.entity.resultSet.RelatedSearchWordResultSet;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@ApiOperation(value="검색어에 해당하는 연관 검색어 리스트 가져오기 Response Body - data")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetTop15RelatedSearchWordResponseDto {
+
+    @ApiModelProperty(value="상위 15개의 연관 검색어 리스트", example="['아침', '점심', '저녁']", required=true)
     private List<String> top15SearchWordList;
 
     public static GetTop15RelatedSearchWordResponseDto copyList(List<RelatedSearchWordResultSet> list) {

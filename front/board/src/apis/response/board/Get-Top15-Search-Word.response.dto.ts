@@ -1,4 +1,4 @@
-interface Dto {
+interface Dto{
     top15SearchWordList: string[];
 }
 

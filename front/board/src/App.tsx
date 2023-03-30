@@ -58,7 +58,8 @@ function App() {
   useEffect(() => {
     const accessToken = cookies.accessToken;
     if(accessToken) getUser(accessToken);
-  }, []);
+    //? path가 바뀔 때마다 돌게 해줌
+  }, [path]);
 
   return (
     <>

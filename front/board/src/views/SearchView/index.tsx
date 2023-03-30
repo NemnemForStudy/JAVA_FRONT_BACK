@@ -18,12 +18,19 @@ export default function SearchView() {
 
     const { content } = useParams();
     const { viewList, pageNumber, boardList, setBoardList, onPageHandler, COUNT } = usePagingHook(5);
+    
     const [popularList, setPopularList] = useState<string[]>([]);
 
     const getSearchList = () => {
         axios.get(GET_SEARCH_LIST_URL(content as string))
             .then((response) => getSearchListResponseHandler(response))
             .catch((error) => getSearchListErrorHandler(error));
+    }
+
+    const getTop15RelatedSearchWord = () => {
+        axios.get(GET_TOP15_RELATED_SEARCH_WORD_URL(content as string))
+            .then((response) => getTop15RelatedSearchWordResponseHandler(response))
+            .catch((error) => getTop15RelatedSearchWordErrorHandler(error));
     }
 
     const getSearchListResponseHandler = (response: AxiosResponse<any, any>) => {
@@ -36,15 +43,9 @@ export default function SearchView() {
         console.log(error.message);
     }
 
-    const getTop15RelatedSearchWord = () => {
-        axios.get(GET_TOP15_RELATED_SEARCH_WORD_URL(content as string))
-            .then((response) => getTop15RelatedSearchWordResponseHandler(response))
-            .catch((error) => getTop15RelatedSearchWordErrorHandler(error));
-    }
-
-    const getTop15RelatedSearchWordResponseHandler = (response:AxiosResponse<any, any>) => {
-        const { result, message, data } = response.data as ResponseDto<GetTop15RelatedSearchWordResponseDto[]>;
-        if(!result || !data ) return;
+    const getTop15RelatedSearchWordResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<GetTop15RelatedSearchWordResponseDto>;
+        if (!result || !data) return;
         setPopularList(data.top15SearchWordList);
     }
 
@@ -66,28 +67,28 @@ export default function SearchView() {
     //     onPageHandler(pageNumber);
     // }, [boardList]);
 
-  return (
-    <Box sx={{ p: '40px 120px', backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-        <Box sx={{ fontSize: '24px', fontWeight: 500 }}>
-            <Box component='strong'>{content}</Box>
-            <Typography component='span' sx={{ fontSize: '24px', fontWeight: 500, opacity: 0.7 }}>에 대한 검색결과 입니다. </Typography>
-            <Box component='strong'>{boardList.length}</Box>
-        </Box>
-        <Box sx={{ pt: '20px', pb: '80px' }}>
-            <Grid container spacing={3}>
-                <Grid item sm={12} md={8}>
-                    <Stack spacing={2}>
-                        {viewList.length === 0 ? (<Box sx={{ height: '416px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography sx={{ fontSize: '24px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.4)' }}>검색결과가 없습니다.</Typography></Box>) : viewList.map((boardItem) => (<BoardListItem item={boardItem as GetSearchListResponseDto} />))}
-                    </Stack>
+    return (
+        <Box sx={{ p: '40px 120px', backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+            <Box sx={{ fontSize: '24px', fontWeight: 500 }}>
+                <Box component='strong'>{content}</Box>
+                <Typography component='span' sx={{ fontSize: '24px', fontWeight: 500, opacity: 0.7 }}>에 대한 검색결과 입니다. </Typography>
+                <Box component='strong'>{boardList.length}</Box>
+            </Box>
+            <Box sx={{ pt: '20px', pb: '80px' }}>
+                <Grid container spacing={3}>
+                    <Grid item sm={12} md={8}>
+                        <Stack spacing={2}>
+                            {viewList.length === 0 ? (<Box sx={{ height: '416px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography sx={{ fontSize: '24px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.4)' }}>검색결과가 없습니다.</Typography></Box>) : viewList.map((boardItem) => (<BoardListItem item={boardItem as GetSearchListResponseDto} />))}
+                        </Stack>
+                    </Grid>
+                    <Grid item sm={12} md={4}>
+                        <PopularCard title='연관 검색어' popularList={popularList} />
+                    </Grid>
                 </Grid>
-                <Grid item sm={12} md={4}>
-                    <PopularCard title='연관 검색어' popularList={popularList}/>
-                </Grid>
-            </Grid>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Pagination page={pageNumber} count={getPageCount(boardList, COUNT)} onChange={(event, value) => onPageHandler(value)} />
+            </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Pagination page={pageNumber} count={getPageCount(boardList, COUNT)} onChange={(event, value) => onPageHandler(value)} />
-        </Box>
-    </Box>
-  )
-}
+      )
+    }
