@@ -38,7 +38,7 @@ export default function NavigationBar() {
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block', color: '#000000' } }}
             onClick={() => navigator('/')}
           >
-            Hoons Board
+            Nemnem Board
           </Typography>
           <Box sx={{ display: 'flex' }}>
             <FormControl variant='outlined' sx={{ mr: '10px' }}>

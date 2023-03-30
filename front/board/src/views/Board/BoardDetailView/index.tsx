@@ -7,15 +7,18 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
-import Pagination from '@mui/material/Pagination';
 
 import CommentListItem from 'src/components/CommentListItem';
 import LikeListItem from 'src/components/LikeListItem';
 import { usePagingHook } from 'src/hooks';
 import { useUserStore } from 'src/stores';
-import { ICommentItem, ILikeUser, IPreviewItem } from 'src/interfaces';
+import { Board, Comment, ICommentItem, ILikeUser, IPreviewItem, Liky } from 'src/interfaces';
 import { getPageCount } from 'src/utils';
 import { BOARD_LIST, COMMENT_LIST, LIKE_LIST } from 'src/mock';
+import axios, { AxiosResponse } from 'axios';
+import { GetBoardResponseDto } from 'src/apis/response/board';
+import ResponseDto from 'src/apis/response';
+import { GET_BOARD_URL } from 'src/constants/api';
 
 export default function BoardDetailView() {
 
@@ -26,18 +29,17 @@ export default function BoardDetailView() {
     const[menuFlag, setMenuFlag] = useState<boolean>(false);
     //? open이 true false형태이니 boolean으로 처음은 false
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
-    //? 일단 null이 가능하게
-    const [board, setBoard] = useState<null | IPreviewItem>(null);
+    const [board, setBoard] = useState<Board | null>(null);
 
     //? 좋아요 눌렀을 때 색 변경
     const [likeState, setLikeState] = useState<boolean>(false);
     //? 누를때마다 좋아요 누른 사람이 나왔다가 사라짐.
     const [openLike, setOpenLike] = useState<boolean>(false);
     const [openComment, setOpenComment] = useState<boolean>(false);
+    const [commentList, setCommentList] = useState<Comment[]>([]); 
     
     //? 기억하자 배열을 들고올 때는 interface이름 + []
-    const [LikeList, setLikeList] = useState<ILikeUser[]>([]);
+    const [LikeList, setLikeList] = useState<Liky[]>([]);
 
     const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
 
@@ -47,6 +49,41 @@ export default function BoardDetailView() {
 
     //? user 데이터 꺼내오기
     const { user } = useUserStore();
+
+    const getBoard = () => {
+        axios.get(GET_BOARD_URL(boardNumber as string))
+            .then((response) => getBoardResponseHandler(response))
+            .catch((error) => getBoardErrorHandler(error))
+    }
+
+    const getBoardResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<GetBoardResponseDto[]>;
+        if(!result || !data) {
+            alert(message);
+            navigator('/');
+            return;
+        }
+        const { board, commentList, likeList } = data;
+        setBoard(board);
+        setCommentList(commentList);
+        setLikeList(likeList);
+    }
+
+    const getBoardErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    //? event 받을 적에 event 타입을 모른다. 그럴때는 마우스 올리면 타입이 나온다.
+    const onMenuClickHandler = (event : MouseEvent<HTMLButtonElement>) => { 
+        setAnchorElement(event.currentTarget);
+        setMenuOpen(true);
+    }
+
+    const onMenuCloseHandler = () => {
+        setAnchorElement(null);
+        setMenuOpen(false);
+    }
+
 
     useEffect(() => {
         //? 1. 입력받은 파라미터(boardNumber)가 존재하는지 검증
@@ -81,17 +118,6 @@ export default function BoardDetailView() {
         setBoard(board);
 
     }, [])
-
-    //? event 받을 적에 event 타입을 모른다. 그럴때는 마우스 올리면 타입이 나온다.
-    const onMenuClickHandler = (event : MouseEvent<HTMLButtonElement>) => { 
-        setAnchorElement(event.currentTarget);
-        setMenuOpen(true);
-    }
-
-    const onMenuCloseHandler = () => {
-        setAnchorElement(null);
-        setMenuOpen(false);
-    }
 
     return (
     //? p: { 'px' 'px '} <- 세로, 가로

@@ -1,44 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Avatar, Box, Card, CardActionArea, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardActionArea, Chip, Typography } from '@mui/material'
 import { IPreviewItem } from 'src/interfaces'
 import BoardListItem from '../BoardListItem';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
-    previewItem: IPreviewItem
+    title: string;
+    popularList: string[];
 }
 
-export default function PreviewCard({ previewItem }: Props) {
-
-    const backgroundImage = `url(${previewItem.img})`;
-
+export default function PopularCard({ title, popularList }: Props) {
+  
     const navigator = useNavigate();
 
-  return (
-    <Card>
-        <CardActionArea sx={{ height: '508px', backgroundImage: backgroundImage, backgroundSize: 'cover' }} onClick={() => navigator(`/board/detail/${previewItem.boardNumber}`)}>
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column-reverse' }}>
-                <Box sx={{ p: '24px' }}>
-                    <Box sx={{ display: 'flex' }}>
-                        <Box sx={{ mr: '8px' }}>
-                            <Avatar alt="Remy Sharp" src={ previewItem.writerProfile } />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#ffffff' }}>{ previewItem.writerNickname }</Typography>
-                            <Typography sx={{ mt: '2px', fontSize: '12px', fontWeight: 400, color: 'rgba(255, 255, 255, 0.7)' }}>{ previewItem.writeDate }</Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ mt: '16px', mb: '16px' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 500, color: '#ffffff' }}>{ previewItem.boardTitle }</Typography>
-                        <Typography sx={{ mt: '5px', fontSize: '12px', fontWeight: 400, color: 'rgba(255, 255, 255, 0.7)' }}>{ previewItem.boardContent }</Typography>
-                    </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: '12px', fontWeight: 400, color: 'rgba(255, 255, 255, 0.7)' }}>{`댓글 ${previewItem.commentCount} · 좋아요 ${previewItem.likeCount} · 조회수 ${previewItem.viewCount}`}</Typography>
-                    </Box>
-                </Box>
-            </Box>
-        </CardActionArea>
-    </Card>
-  )
-}
+    return (
+      <Card variant='outlined' sx={{ p: '24px 12px 26px 24px' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 500 }}>{title}</Typography>
+          <Box sx={{ mt: '24px' }}>
+            {popularList.length === 0 ? 
+            (<Box sx={{ height: '344px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography sx={{ fontSize: '24px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.4)' }}>검색결과가 없습니다.</Typography></Box>) : 
+            popularList.map((popular) => (
+              <Chip sx={{ mr: '12px', mb: '12px', fontSize: '14px', fontWeight: 500 }} label={popular} variant="outlined" onClick={() => navigator(`/board/search/${popular}`)}/>
+            ))}
+          </Box>
+      </Card>
+    )
+  }

@@ -9,11 +9,13 @@ import { getPageCount } from 'src/utils';
 import { usePagingHook } from 'src/hooks';
 import axios, { AxiosResponse } from 'axios';
 import ResponseDto from 'src/apis/response';
-import { GetListResponseDto } from 'src/apis/response/board';
+import { GetListResponseDto, GetTop15SearchWordResponseDto } from 'src/apis/response/board';
+import { GET_LIST_URL, GET_TOP15_SEARCH_WORD_URL } from 'src/constants/api';
 
 export default function MainContents() {
 
   const { viewList, pageNumber, boardList, setBoardList, onPageHandler, COUNT } = usePagingHook(5);
+  const [popularList, setPopularList] = useState<string[]>([]);
 
   const getList = () => {
     axios.get(GET_LIST_URL)
@@ -31,8 +33,25 @@ export default function MainContents() {
     console.log(error.message);
   }
 
+  const getTop15SearchWord = (response: AxiosResponse<any, any>) => {
+    axios.get(GET_TOP15_SEARCH_WORD_URL)
+      .then((response) => getTop15SearchWordResponseHandler(response))
+      .catch((error) => getTop15SearchWordErrorHandler(error));
+  }
+
+  const getTop15SearchWordResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<GetTop15SearchWordResponseDto[]>
+    if(!result || !data) return;
+    setPopularList(data.top15SearchWordList);
+  }
+
+  const getTop15SearchWordErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
   useEffect(() => {
     getList();
+    getTop15SearchWord();
   }, [])
 
   return (
@@ -48,7 +67,7 @@ export default function MainContents() {
             </Stack>
           </Grid>
           <Grid item sm={12} md={4}>
-            <PopularCard title="인기 검색어" />
+            <PopularCard title="인기 검색어" popularList={popularList}/>
           </Grid>
         </Grid>
       </Box>
@@ -57,8 +76,5 @@ export default function MainContents() {
       </Box>
     </Box>
   )
-}
-function getList() {
-  throw new Error('Function not implemented.');
 }
 
