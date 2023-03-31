@@ -13,15 +13,18 @@ import CommentListItem from 'src/components/CommentListItem';
 import LikeListItem from 'src/components/LikeListItem';
 import { usePagingHook } from 'src/hooks';
 import { useUserStore } from 'src/stores';
-import { Board, Comment, ICommentItem, ILikeUser, IPreviewItem, Liky } from 'src/interfaces';
+import { Board, Comment, Liky } from 'src/interfaces';
 import { getPageCount } from 'src/utils';
-import { BOARD_LIST, COMMENT_LIST, LIKE_LIST } from 'src/mock';
 import axios, { AxiosResponse } from 'axios';
 import ResponseDto from 'src/apis/response';
-import { GET_BOARD_URL } from 'src/constants/api';
-import { GetBoardResponseDto } from 'src/apis/response/board';
+import { authorizationHeader, DELET_BOARD_URL, GET_BOARD_URL, LIKE_URL, POST_COMMENT_URL } from 'src/constants/api';
+import { DeleteBoardResponseDto, GetBoardResponseDto, LikeResponseDto, PostCommentResponseDto } from 'src/apis/response/board';
+import { useCookies } from 'react-cookie';
+import { LikeDto, PostCommentDto } from 'src/apis/request/board';
 
 export default function BoardDetailView() {
+
+    const [cookies] = useCookies();
 
     //? 일단 null을 넣어주자
     //? anchorElement를 지정해줘야 한다.
@@ -42,6 +45,7 @@ export default function BoardDetailView() {
     
     //? 기억하자 배열을 들고올 때는 interface이름 + []
     const [openComment, setOpenComment] = useState<boolean>(false);
+    const [commentContent, setCommentContent] = useState<string>('');
 
     const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
 
@@ -51,6 +55,8 @@ export default function BoardDetailView() {
 
     //? user 데이터 꺼내오기
     const { user } = useUserStore();
+
+    const accessToken = cookies.accessToken;
 
     //? 조회수 1 증가 시키기
     let isLoad = false;
@@ -68,13 +74,7 @@ export default function BoardDetailView() {
             navigator('/');
             return;
         }
-        const { board, commentList, likeList } = data;
-        setBoard(board);
-        // 댓글 리스트를 3개까지 보여주도록 하는 로직
-        setBoardList(commentList);
-        setLikeList(likeList);
-        const owner = user !== null && board.writerEmail === user.email;
-        setMenuFlag(owner);
+        setBoardResponse(data);
     }
 
     const getBoardErrorHandler = (error: any) => {
@@ -89,6 +89,98 @@ export default function BoardDetailView() {
     const onMenuCloseHandler = () => {
         setAnchorElement(null);
         setMenuOpen(false);
+    }
+
+    const onLikeHander = () => {
+        //? 로그인이 안되어 있으면 좋아요 누를 수 없음
+        if(!accessToken) {
+            alert('로그인이 필요한 서비스입니다.');
+            return;
+        }
+
+        //? undefined로 되어있기 때문에 강제로 as string으로 형 변환
+        const data: LikeDto = { boardNumber: parseInt(boardNumber as string) };
+        axios.post(LIKE_URL, data, authorizationHeader(accessToken))
+            .then((response) => likeResponseHandler(response))
+            .catch((error) => likeErrorHandler(error));
+    }
+
+    const likeResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<LikeResponseDto>;
+        if (!result || !data) {
+            alert(message);
+            return;
+        }
+        setBoardResponse(data);
+    }
+
+    const likeErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    //? 버튼을 눌렸을 때 동작하는 것
+    const onPostCommentHandler = () => {
+        if(!accessToken) {
+            alert('로그인이 필요한 서비스입니다.');
+            return;
+        }
+
+        const data: PostCommentDto = { boardNumber: parseInt(boardNumber as string), commentContent };
+        axios.post(POST_COMMENT_URL, data, authorizationHeader(accessToken))
+            .then((response) => postCommentResponseHandler(response))
+            .catch((error) => postCommentErrorHandler(error));
+    }
+
+    const postCommentResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<PostCommentResponseDto>;
+        if(!result || !data) {
+            alert(message);
+            return;
+        }
+        setBoardResponse(data);
+        setCommentContent('');
+    }
+
+    const postCommentErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    const onDeleteHandler = () => {
+        if(!accessToken) {
+            alert('로그인이 필요한 서비스입니다.');
+            return;
+        }
+        if(board?.writerEmail !== user?.email){
+            alert('권한이 없습니다');
+            return;
+        }
+
+        axios.delete(DELET_BOARD_URL(boardNumber as string), authorizationHeader(accessToken))
+            .then((response) => deleteBoardResponseHandler(response))
+            .catch((error) => deleteBoardErrorHandler(error));
+    }
+
+    const deleteBoardResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<DeleteBoardResponseDto>;
+        if ( !result || !data || !data.resultStatus ) {
+            alert(message);
+            return;
+        }
+        navigator('/');
+    }
+
+    const deleteBoardErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    const setBoardResponse = (data: GetBoardResponseDto | LikeResponseDto | PostCommentResponseDto) => {
+        const { board, commentList, likeList } = data;
+        setBoard(board);
+        // 댓글 리스트를 3개까지 보여주도록 하는 로직
+        setBoardList(commentList);
+        setLikeList(likeList);
+        const owner = user !== null && board.writerEmail === user.email;
+        setMenuFlag(owner);
     }
 
     useEffect(() => {
@@ -108,7 +200,8 @@ export default function BoardDetailView() {
         //? user 이메일이 같은지 봐줘야함
         const like = likeList.find((like) => like.userEmail === user.email);
         //? liky가 반환해주는게 undefined라서 넣었다. find를 보면 알 수 있다.
-        setLikeState(like !== undefined && like !== null);
+        setLikeState(like !== undefined);
+        //? useEffect에서 존재하는지 안하는지 검사를 하고 setLikeStatus로 undefined를 확인하고 likeList가 바뀌게 해준다.
     }, [likeList]);
 
     return (
@@ -134,9 +227,9 @@ export default function BoardDetailView() {
                     {/* //? true false 형태 */}
                     {/* //? anchorEl은 어디에 걸리는 거라고 한다. */}
                     <Menu anchorEl={anchorElement} open={menuOpen} onClose={onMenuCloseHandler}>
-                        <MenuItem sx={{ p: '10px 59px ', opacity: 0.5 }} onClick={() => navigator(`/board/update${board?.boardNumber}`)}>수정</MenuItem>
+                        <MenuItem sx={{ p: '10px 59px ', opacity: 0.5 }} onClick={() => navigator(`/board/update/${board?.boardNumber}`)}>수정</MenuItem>
                         <Divider />
-                        <MenuItem sx={{ p: '10px 59px ', color: '#ff0000', opacity: 0.5}}>삭제</MenuItem>
+                        <MenuItem sx={{ p: '10px 59px ', color: '#ff0000', opacity: 0.5}} onClick={() => onDeleteHandler()}>삭제</MenuItem>
                     </Menu>
                 </Box>
             </Box>             
@@ -149,8 +242,8 @@ export default function BoardDetailView() {
             <Box sx={{ display: 'flex', mt: '20px' }}>
                 <Box sx={{ display: 'flex', mr: '20px' }}>
                     { likeState ? 
-                        (<FavoriteIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => setLikeState(!likeState)}/> ) : 
-                        (<FavoriteBorderIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} onClick={() => setLikeState(!likeState)} />) 
+                        (<FavoriteIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => onLikeHander()}/> ) : 
+                        (<FavoriteBorderIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} onClick={() => onLikeHander()} />) 
                     }
                     <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.likeCount}</Typography>
                     <IconButton sx={{ height: '24px', width: '24px' }} onClick={() => setOpenLike(!openLike)}>
@@ -198,9 +291,9 @@ export default function BoardDetailView() {
                 </Box>
                 <Box>
                     <Card variant='outlined' sx={{ p: '20px' }}>
-                        <Input minRows={3} multiline disableUnderline fullWidth />
+                        <Input minRows={3} multiline disableUnderline fullWidth value={commentContent} onChange={(event) => setCommentContent(event.target.value)}/>
                         <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                            <Button sx={{ p: '4px 23px', backgroundColor: '#000000', fontSize: '14px', fontWeight: 400, color: '#ffffff', borderRadius: '46px' }}>댓글달기</Button>
+                            <Button sx={{ p: '4px 23px', backgroundColor: '#000000', fontSize: '14px', fontWeight: 400, color: '#ffffff', borderRadius: '46px' }} onClick={() => onPostCommentHandler()}>댓글달기</Button>
                         </Box>
                     </Card>
                 </Box>
