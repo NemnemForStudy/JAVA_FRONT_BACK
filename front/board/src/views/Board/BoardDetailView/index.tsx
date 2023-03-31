@@ -7,7 +7,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
+ 
 import CommentListItem from 'src/components/CommentListItem';
 import LikeListItem from 'src/components/LikeListItem';
 import { usePagingHook } from 'src/hooks';
@@ -101,6 +102,15 @@ export default function BoardDetailView() {
         getBoard();
     }, [])
 
+    useEffect(() => {
+        if(!user) return;
+        //? like를 하나씩 꺼내옴
+        //? user 이메일이 같은지 봐줘야함
+        const like = likeList.find((like) => like.userEmail === user.email);
+        //? liky가 반환해주는게 undefined라서 넣었다. find를 보면 알 수 있다.
+        setLikeState(like !== undefined && like !== null);
+    }, [likeList]);
+
     return (
     //? p: { 'px' 'px '} <- 세로, 가로
     <Box sx={{ p: '100px 222px'}}>
@@ -139,7 +149,7 @@ export default function BoardDetailView() {
             <Box sx={{ display: 'flex', mt: '20px' }}>
                 <Box sx={{ display: 'flex', mr: '20px' }}>
                     { likeState ? 
-                        (<ChatOutlinedIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => setLikeState(!likeState)}/> ) : 
+                        (<FavoriteIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7, color: '#ff0000' }} onClick={() => setLikeState(!likeState)}/> ) : 
                         (<FavoriteBorderIcon sx={{ height: '24px', width: '24px', mr: '6px', opacity: 0.7 }} onClick={() => setLikeState(!likeState)} />) 
                     }
                     <Typography sx={{fontSize: '16px', fontWeight: 500, opacity: 0.7, mr: '6px' }}>{board?.likeCount}</Typography>

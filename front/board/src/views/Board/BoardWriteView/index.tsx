@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 import { Box, Divider, Fab, IconButton, Input } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -9,9 +9,12 @@ import ResponseDto from 'src/apis/response';
 import { PostBoardResponseDto } from 'src/apis/response/board';
 import { useCookies } from 'react-cookie';
 import { PostBoardDto } from 'src/apis/request/board';
-import { authorizationHeader, POST_BOARD_URL } from 'src/constants/api';
+import { authorizationHeader, FILE_UPLOAD_URL, POST_BOARD_URL } from 'src/constants/api';
 
 export default function BoardWriteView() {
+
+  //? useRef는 Html태그 요소들인데, input Element를 담아주는 state를 넣어준 것
+  const imageRef = useRef<HTMLInputElement | null>(null);
 
   const [cookies] = useCookies();
   const [boardTitle, setBoardTitle] = useState<string>('');
@@ -42,6 +45,39 @@ export default function BoardWriteView() {
     console.log(error.message);
   }
 
+  //? 클릭하면 실행
+  const onImageUploadButtonHandler = () => {
+    //? 선택되지 않으면 종료
+    if(!imageRef.current) return;
+    imageRef.current.click();
+  }
+
+  const onImageUploadChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    //? file이 배열 형태로 들어가는 형태
+    if(!event.target.files) return;
+    
+    //? Form형태로 전달
+    const data = new FormData();
+    data.append('file', event.target.files[0]);
+
+    axios.post(FILE_UPLOAD_URL, data, multipartHeader())
+      .then((response) => imageUploadResponseHandler(response))
+      .catch((error) => imageUploadErrorHandler(error));
+  }
+
+  const imageUploadResponseHandler = (response: AxiosResponse<any, any>) => {
+    //? imageUploadResponseHandler의 response는 문자열 형태로 받는다
+    const imageUrl = response.data as string;
+    //? 만약 값이 오지 않는다면 종료
+    if(!imageUrl) return;
+    //? 값이 오면 setBoardImgUrl에서 imageUrl을 넣음
+    setBoardImgUrl(imageUrl);
+  }
+
+  const imageUploadErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
   const onWriteHandler = () => {
     //? 제목 및 내용 검증 (값이 존재하는지)
     if (!boardTitle.trim() || !boardContent.trim()) {
@@ -65,9 +101,15 @@ export default function BoardWriteView() {
         <Input fullWidth disableUnderline placeholder='제목을 입력하세요.' sx={{ fontSize: '32px', fontWeight: 500 }} onChange={(event) => setBoardTitle(event.target.value)} />
         <Divider sx={{ m: '40px 0px' }} />
         <Box sx={{ display: 'flex', alignItems: 'start' }}>
-          <Input fullWidth disableUnderline multiline minRows={20} placeholder='본문을 작성해주세요.' sx={{ fontSize: '18px', fontWeight: 500, lineHeight: '150%' }} onChange={(event) => setBoardContent(event.target.value)}/>
-          <IconButton>
+          
+          <Box sx={{width:'100%'}}>
+            <Input fullWidth disableUnderline multiline minRows={5} placeholder='본문을 작성해주세요.' sx={{ fontSize: '18px', fontWeight: 500, lineHeight: '150%' }} onChange={(event) => setBoardContent(event.target.value)}/>
+            <Box sx={{ width: '100%'}}component='img' src={boardImgUrl}></Box>
+          </Box>
+
+          <IconButton onClick={() => onImageUploadButtonHandler()}>
             <ImageOutlinedIcon />
+            <input ref={imageRef} hidden type='file' accept='image/*' onChange={(event) => onImageUploadChangeHandler(event)}/>
           </IconButton>
         </Box>
       </Box>
@@ -76,4 +118,8 @@ export default function BoardWriteView() {
       </Fab>
     </Box>
   )
+}
+
+function multipartHeader(): import("axios").AxiosRequestConfig<FormData> | undefined {
+  throw new Error('Function not implemented.');
 }
