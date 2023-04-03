@@ -1,17 +1,21 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
+import axios, { AxiosResponse } from 'axios';
 import { Box, Divider, Fab, IconButton, Input } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import CreateIcon from '@mui/icons-material/Create';
-import { useNavigate } from 'react-router-dom';
-import axios, { AxiosResponse } from 'axios';
+
 import ResponseDto from 'src/apis/response';
 import { PostBoardResponseDto } from 'src/apis/response/board';
-import { useCookies } from 'react-cookie';
 import { PostBoardDto } from 'src/apis/request/board';
 import { authorizationHeader, FILE_UPLOAD_URL, POST_BOARD_URL } from 'src/constants/api';
 
 export default function BoardWriteView() {
+
+  //          Hook          //
+  const navigator = useNavigate();
 
   //? useRef는 Html태그 요소들인데, input Element를 담아주는 state를 넣어준 것
   const imageRef = useRef<HTMLInputElement | null>(null);
@@ -21,33 +25,12 @@ export default function BoardWriteView() {
   const [boardContent, setBoardContent] = useState<string>('');
   const [boardImgUrl, setBoardImgUrl] = useState<string>('');
 
-  const navigator = useNavigate();
-
   const accessToken = cookies.accessToken;
 
-  const postBoard = () => {
-    const data: PostBoardDto = { boardTitle, boardContent, boardImgUrl};
-    axios.post(POST_BOARD_URL, data, authorizationHeader(accessToken))
-      .then((response) => postBoardResponseHandler(response))
-      .catch((error) => postBoardErrorHandler(error));
-  }
+  //          Event Handler          //
 
-  const postBoardResponseHandler = (response: AxiosResponse<any, any>) => {
-    const { result, message, data } = response.data as ResponseDto<PostBoardResponseDto[]>;
-    if(!result || !data) {
-      alert(message);
-      return;
-    }
-    navigator('/myPage');
-  }
-
-  const postBoardErrorHandler = (error: any) => {
-    console.log(error.message);
-  }
-
-  //? 클릭하면 실행
+  // TODO : Hook 또는 외부 함수로 변경
   const onImageUploadButtonHandler = () => {
-    //? 선택되지 않으면 종료
     if(!imageRef.current) return;
     imageRef.current.click();
   }
@@ -73,13 +56,8 @@ export default function BoardWriteView() {
     //? 값이 오면 setBoardImgUrl에서 imageUrl을 넣음
     setBoardImgUrl(imageUrl);
   }
-
-  const imageUploadErrorHandler = (error: any) => {
-    console.log(error.message);
-  }
-
+  
   const onWriteHandler = () => {
-    //? 제목 및 내용 검증 (값이 존재하는지)
     if (!boardTitle.trim() || !boardContent.trim()) {
       alert('모든 내용을 입력해주세요.');
       return;
@@ -88,6 +66,33 @@ export default function BoardWriteView() {
     postBoard();
   }
 
+  const postBoard = () => {
+    const data: PostBoardDto = { boardTitle, boardContent, boardImgUrl};
+    axios.post(POST_BOARD_URL, data, authorizationHeader(accessToken))
+      .then((response) => postBoardResponseHandler(response))
+      .catch((error) => postBoardErrorHandler(error));
+  }
+
+  //          Response Handler          //
+  const postBoardResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<PostBoardResponseDto[]>;
+    if(!result || !data) {
+      alert(message);
+      return;
+    }
+    navigator('/myPage');
+  }
+
+  //          Error Handler          //
+  const postBoardErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  const imageUploadErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  //          use Effect          //
   useEffect(() => {
     if(!accessToken){
       alert('로그인이 필요한 작업입니다.');

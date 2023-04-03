@@ -1,9 +1,7 @@
-import React from 'react'
-
-import { Avatar, Box, Card, CardActionArea, Chip, Typography } from '@mui/material'
-import { IPreviewItem } from 'src/interfaces'
-import BoardListItem from '../BoardListItem';
 import { useNavigate } from 'react-router-dom';
+
+import { Box, Card, Chip, Typography } from '@mui/material'
+
 
 interface Props {
     title: string;
@@ -12,6 +10,7 @@ interface Props {
 
   export default function PopularCard({ title, popularList }: Props) {
   
+    //          Hook          //
     const navigator = useNavigate();
   
     return (

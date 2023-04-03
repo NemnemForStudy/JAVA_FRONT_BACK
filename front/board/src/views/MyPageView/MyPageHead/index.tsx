@@ -1,30 +1,34 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react'
+import { ChangeEvent, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
+import axios, { AxiosResponse } from 'axios';
 import { Avatar, Box, Typography, IconButton } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
 import { useUserStore } from 'src/stores';
-import { useNavigate } from 'react-router-dom';
-import axios, { AxiosResponse } from 'axios';
-import { authorizationHeader, FILE_UPLOAD_URL, PATCH_PROFILE_URL } from 'src/constants/api';
 import { PatchProfileDto } from 'src/apis/request/user';
 import ResponseDto from 'src/apis/response';
 import { PatchProfileResponseDto } from 'src/apis/response/user';
-import { useCookies } from 'react-cookie';
-import { access } from 'fs';
+import { authorizationHeader, FILE_UPLOAD_URL, PATCH_PROFILE_URL, multipartHeader } from 'src/constants/api';
 
 export default function MyPageHead() {
 
+    //          Hook          //
+    const navigator = useNavigate();
     const imageRef = useRef<HTMLInputElement | null>(null);
 
     const [cookies, setCookies] = useCookies();
     const { user, setUser, resetUser } = useUserStore();
-    const navigator = useNavigate();
 
     const accessToken = cookies.accessToken;
 
-    const onProfileUploadButtonHandler = () => {
-        if(!imageRef.current) return;
-        imageRef.current.click();
+    //          Event Handler          //
+    const onLogoutHandler = () => {
+        // TODO : 로그아웃 처리 안됨. 해결하자
+        setCookies('accessToken', '', { expires: new Date() });
+        resetUser();
+        navigator('/');
     }
 
     const onProfileUploadChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +42,16 @@ export default function MyPageHead() {
             .catch((error) => imageUploadErrorHandler(error));
     }
 
+    // TODO
+    const onProfileUploadButtonHandler = () => {
+        if(!imageRef.current) return;
+        imageRef.current.click();
+    }
+
+    
+
+
+    //          Response Handler          //
     const imageUploadResponseHandler = (response: AxiosResponse<any, any>) => {
         //? 이건 업로드 한번하고 끝나면 안되고
         //? 다시 axios를 보내야 하고 profile을 호출해야한다.
@@ -50,10 +64,6 @@ export default function MyPageHead() {
             .catch((error) => patchProfileErrorHandler(error));
     }
 
-    const imageUploadErrorHandler = (error: any) => {
-        console.log(error.message);
-    }
-
     const patchProfileResponseHandler = (response: AxiosResponse<any, any>) => {
         const { result, message, data } = response.data as ResponseDto<PatchProfileResponseDto>;
         if(!result || !data) {
@@ -63,16 +73,16 @@ export default function MyPageHead() {
         setUser(data);
     }
 
+    //          Error Handler          //
+    const imageUploadErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
     const patchProfileErrorHandler = (error: any) => {
         console.log(error.message);
     }
 
-    const onLogoutHandler = () => {
-        setCookies('accessToken', '', { expires: new Date() });
-        resetUser();
-        navigator('/');
-    }
-
+    //          use Effect          //
     useEffect(() => {
         if(!accessToken) {
             navigator('/auth');
@@ -101,6 +111,3 @@ export default function MyPageHead() {
   )
 }
 
-function multipartHeader(): import("axios").AxiosRequestConfig<FormData> | undefined {
-    throw new Error('Function not implemented.');
-}

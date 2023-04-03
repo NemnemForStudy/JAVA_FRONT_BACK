@@ -1,6 +1,8 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
+import axios, { AxiosResponse } from 'axios';
 import { Avatar, Box, Button, Card, Divider, IconButton, Menu, Input, MenuItem, Pagination, Stack, Typography } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -15,70 +17,44 @@ import { usePagingHook } from 'src/hooks';
 import { useUserStore } from 'src/stores';
 import { Board, Comment, Liky } from 'src/interfaces';
 import { getPageCount } from 'src/utils';
-import axios, { AxiosResponse } from 'axios';
 import ResponseDto from 'src/apis/response';
 import { authorizationHeader, DELET_BOARD_URL, GET_BOARD_URL, LIKE_URL, POST_COMMENT_URL } from 'src/constants/api';
 import { DeleteBoardResponseDto, GetBoardResponseDto, LikeResponseDto, PostCommentResponseDto } from 'src/apis/response/board';
-import { useCookies } from 'react-cookie';
 import { LikeDto, PostCommentDto } from 'src/apis/request/board';
 
 export default function BoardDetailView() {
 
+    //          Hook          //
+    const navigator = useNavigate();
+
+    const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
+    const { boardNumber } = useParams();
+    const { user } = useUserStore();
+
     const [cookies] = useCookies();
 
-    //? 일단 null을 넣어주자
-    //? anchorElement를 지정해줘야 한다.
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
 
     const[menuFlag, setMenuFlag] = useState<boolean>(false);
-    //? open이 true false형태이니 boolean으로 처음은 false
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
-    //? 일단 null이 가능하게
     const [board, setBoard] = useState<Board | null>(null);
 
-    //? 좋아요 눌렀을 때 색 변경
     const [likeState, setLikeState] = useState<boolean>(false);
-    //? 누를때마다 좋아요 누른 사람이 나왔다가 사라짐.
     const [openLike, setOpenLike] = useState<boolean>(false);
     const [likeList, setLikeList] = useState<Liky[]>([]);
     
-    //? 기억하자 배열을 들고올 때는 interface이름 + []
     const [openComment, setOpenComment] = useState<boolean>(false);
     const [commentContent, setCommentContent] = useState<string>('');
 
-    const { boardList, setBoardList, viewList, COUNT, pageNumber, onPageHandler } = usePagingHook(3);
-
-    //? boardNumber 데이터를 꺼내올거다.
-    const { boardNumber } = useParams();
-    const navigator = useNavigate();
-
-    //? user 데이터 꺼내오기
-    const { user } = useUserStore();
-
     const accessToken = cookies.accessToken;
 
-    //? 조회수 1 증가 시키기
     let isLoad = false;
 
-    const getBoard = () => {
-        axios.get(GET_BOARD_URL(boardNumber as string))
-            .then((response) => getBoardResponseHandler(response))
-            .catch((error) => getBoardErrorHandler(error));
-    }
-
-    const getBoardResponseHandler = (response: AxiosResponse<any, any>) => {
-        const { result, message, data } = response.data as ResponseDto<GetBoardResponseDto>
-        if (!result || !data) {
-            alert(message);
-            navigator('/');
-            return;
-        }
-        setBoardResponse(data);
-    }
-
-    const getBoardErrorHandler = (error: any) => {
-        console.log(error.message);
+    //          Event Handler          //
+    const onMenuCloseHandler = () => {
+        setAnchorElement(null);
+        setMenuOpen(false);
     }
 
     const onMenuClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
@@ -86,9 +62,20 @@ export default function BoardDetailView() {
         setMenuOpen(true);
     }
 
-    const onMenuCloseHandler = () => {
-        setAnchorElement(null);
-        setMenuOpen(false);
+    const getBoard = () => {
+        axios.get(GET_BOARD_URL(boardNumber as string))
+            .then((response) => getBoardResponseHandler(response))
+            .catch((error) => getBoardErrorHandler(error));
+    }
+
+
+    const likeResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<LikeResponseDto>;
+        if (!result || !data) {
+            alert(message);
+            return;
+        }
+        setBoardResponse(data);
     }
 
     const onLikeHander = () => {
@@ -105,20 +92,6 @@ export default function BoardDetailView() {
             .catch((error) => likeErrorHandler(error));
     }
 
-    const likeResponseHandler = (response: AxiosResponse<any, any>) => {
-        const { result, message, data } = response.data as ResponseDto<LikeResponseDto>;
-        if (!result || !data) {
-            alert(message);
-            return;
-        }
-        setBoardResponse(data);
-    }
-
-    const likeErrorHandler = (error: any) => {
-        console.log(error.message);
-    }
-
-    //? 버튼을 눌렸을 때 동작하는 것
     const onPostCommentHandler = () => {
         if(!accessToken) {
             alert('로그인이 필요한 서비스입니다.');
@@ -129,20 +102,6 @@ export default function BoardDetailView() {
         axios.post(POST_COMMENT_URL, data, authorizationHeader(accessToken))
             .then((response) => postCommentResponseHandler(response))
             .catch((error) => postCommentErrorHandler(error));
-    }
-
-    const postCommentResponseHandler = (response: AxiosResponse<any, any>) => {
-        const { result, message, data } = response.data as ResponseDto<PostCommentResponseDto>;
-        if(!result || !data) {
-            alert(message);
-            return;
-        }
-        setBoardResponse(data);
-        setCommentContent('');
-    }
-
-    const postCommentErrorHandler = (error: any) => {
-        console.log(error.message);
     }
 
     const onDeleteHandler = () => {
@@ -160,6 +119,27 @@ export default function BoardDetailView() {
             .catch((error) => deleteBoardErrorHandler(error));
     }
 
+    //          Response Handler          //
+    const getBoardResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<GetBoardResponseDto>
+        if (!result || !data) {
+            alert(message);
+            navigator('/');
+            return;
+        }
+        setBoardResponse(data);
+    }
+
+    const postCommentResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<PostCommentResponseDto>;
+        if(!result || !data) {
+            alert(message);
+            return;
+        }
+        setBoardResponse(data);
+        setCommentContent('');
+    }
+
     const deleteBoardResponseHandler = (response: AxiosResponse<any, any>) => {
         const { result, message, data } = response.data as ResponseDto<DeleteBoardResponseDto>;
         if ( !result || !data || !data.resultStatus ) {
@@ -173,6 +153,20 @@ export default function BoardDetailView() {
         console.log(error.message);
     }
 
+    //          Error Handler          //
+    const getBoardErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    const likeErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    const postCommentErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    //          function          //
     const setBoardResponse = (data: GetBoardResponseDto | LikeResponseDto | PostCommentResponseDto) => {
         const { board, commentList, likeList } = data;
         setBoard(board);
@@ -183,6 +177,7 @@ export default function BoardDetailView() {
         setMenuFlag(owner);
     }
 
+    //          use Effect          //
     useEffect(() => {
         if(isLoad) return;
         //? boardNumber가 존재하는지 검증
@@ -205,11 +200,9 @@ export default function BoardDetailView() {
     }, [likeList]);
 
     return (
-    //? p: { 'px' 'px '} <- 세로, 가로
     <Box sx={{ p: '100px 222px'}}>
         <Box>
             <Box>
-                {/* //? ?가 붙는 이유는 null일 수도 있기 때문 */}
                 <Typography sx={{ fontSize: '32px', fontWeight: 500 }}>{board?.boardTitle}</Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px'}}>
                     <Box sx={{ display: 'flex', alignItems: 'center'}}>
@@ -222,10 +215,7 @@ export default function BoardDetailView() {
                             <IconButton onClick={(event) => onMenuClickHandler(event)}>
                                 <MoreVertIcon />
                             </IconButton>
-                        )}
-                    {/* //? Menu는 open속성이 필수라서 에러가 뜬다. */}
-                    {/* //? true false 형태 */}
-                    {/* //? anchorEl은 어디에 걸리는 거라고 한다. */}
+                    )}
                     <Menu anchorEl={anchorElement} open={menuOpen} onClose={onMenuCloseHandler}>
                         <MenuItem sx={{ p: '10px 59px ', opacity: 0.5 }} onClick={() => navigator(`/board/update/${board?.boardNumber}`)}>수정</MenuItem>
                         <Divider />
@@ -236,7 +226,6 @@ export default function BoardDetailView() {
             <Divider sx={{ m: '40px 0px' }} />
             <Box>
                 <Typography sx={{ fontSize: '18px', fontWeight: 500, opacity: 0.7 }}>{board?.boardContent}</Typography>
-                {/* //? board?.img로 하니 에러가 났다. 조건을 추가해주자*/}
                 {board?.boardImgUrl && (<Box sx={{ width: '100%', mt: '20px'}} component='img' src={board?.boardImgUrl ? board?.boardImgUrl : ''} />)}
             </Box>
             <Box sx={{ display: 'flex', mt: '20px' }}>
