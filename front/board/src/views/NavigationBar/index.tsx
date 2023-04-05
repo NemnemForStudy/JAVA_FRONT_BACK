@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
@@ -20,6 +20,11 @@ export default function NavigationBar() {
   const [content, setContent] = useState<string>('');
 
   //          Event Handler          //
+  const onSearchKeyPressHandler = (event: KeyboardEvent<HTMLDivElement>) => {
+    if(event.key !== 'Enter') return;
+    onSearchHandler(); 
+  }
+
   const onSearchHandler = () => {
     if (!content.trim()) {
       alert('검색어를 입력하세요.');
@@ -56,6 +61,7 @@ export default function NavigationBar() {
                   </InputAdornment>
                 }
                 onChange={(event) => setContent(event.target.value)}
+                onKeyPress={(event) => onSearchKeyPressHandler(event)}
               />
             </FormControl>
             {path.pathname !== '/auth' && 

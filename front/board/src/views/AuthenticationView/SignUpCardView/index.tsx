@@ -11,6 +11,8 @@ import {
   Input,
   InputAdornment,
   IconButton,
+  FormHelperText,
+  Checkbox,
 } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
@@ -21,6 +23,7 @@ import { SignUpDto } from "src/apis/request/auth";
 import  ResponseDto  from "src/apis/response";
 import { SignUpResponseDto } from "src/apis/response/auth";
 import { SIGN_UP_URL } from "src/constants/api";
+import { Help } from "@mui/icons-material";
 
 //          Component          //
 interface FirstPageProps {
@@ -34,6 +37,8 @@ function FirstPage({ signUpError }: FirstPageProps) {
   const { setEmail, setPassword, setPasswordCheck } = useSignUpStore();
 
   const [emailMessage, setEmailMessage] = useState<string>('');
+  const [passwordMessage, setPasswordMessage] = useState<string>('');
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showPasswordCheck, setShowPasswordCheck] = useState<boolean>(false);
 
@@ -50,6 +55,9 @@ function FirstPage({ signUpError }: FirstPageProps) {
   //? \.[A-Za-z0-9]{2, 3} <- 무조건 .을 찍고 알파벳 2자리나 3자리가 와야함.
   const emailValidator = /^[A-Za-z0-9]([-.]?[A-Za-z0-9])*@[A-Za-z0-9]([-.]?[A-Za-z0-9])*\.[A-Za-z0-9]{2,3}$/;
 
+  //? ?=.[A-Za-z0-9] <- 필수로 [A-Za-z][0-9][!?_] 를 포함해야한다.
+  const passwordValidator = /^(?=.[A-Za-z]*)(?=.[0-9]*)(?=.[!?_]*).{8,20}$/;
+
   //          Event Handler          //
   const onEmailChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = event.target.value;
@@ -57,6 +65,22 @@ function FirstPage({ signUpError }: FirstPageProps) {
     if(isMatched) setEmailMessage('');
     else setEmailMessage('이메일 주소 포맷이 맞지 않습니다.');
     setEmail(value);
+  }
+
+  const onPasswordChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const value = event.target.value;
+    const isMatched = passwordValidator.test(value);
+    if(isMatched) setPasswordMessage('');
+    else setPasswordMessage('영문자 + 숫자 + 특수문자(!?.)를 포함한 8-20자를 입력해주세요');
+    setPassword(value);
+  }
+
+  const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const value = event.target.value;
+    const isMatched = password === value;
+    if(isMatched) setPasswordCheckMessage('');
+    else setPasswordCheckMessage('비밀번호가 서로 일치하지 않습니다.');
+    setPasswordCheck(value);    
   }
 
   return (
@@ -83,8 +107,9 @@ function FirstPage({ signUpError }: FirstPageProps) {
             </InputAdornment>
           }
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => onPasswordChangeHandler(event)}
         />
+        <FormHelperText>{passwordMessage}</FormHelperText>
       </FormControl>
       <FormControl sx={{ mt: "40px" }} error={signUpError} fullWidth variant="standard" >
         <InputLabel>비밀번호 확인*</InputLabel>
@@ -100,8 +125,9 @@ function FirstPage({ signUpError }: FirstPageProps) {
             </InputAdornment>
           }
           value={passwordCheck}
-          onChange={(event) => setPasswordCheck(event.target.value)}
+          onChange={(event) => onPasswordCheckChangeHandler(event)}
         />
+        <FormHelperText>{passwordCheckMessage}</FormHelperText>
       </FormControl>
     </Box>
   );
@@ -118,10 +144,23 @@ function SecondPage( {signUpError}: SecondPageProps ) {
   const { nickname, telNumber, address, addressDetail } = useSignUpStore();
   const { setNickname, setTelNumber, setAddress, setAddressDetail } = useSignUpStore();
 
+  const [telNumberMessage, setTelNumberMessage] = useState<string>('');
+  const telNumberValidator = /^[0-9]{0,13}$/;
+  // const telNumberValidator = /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/
+
+  //          Event Handler          //
+  const ontelNumberHander = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const value = event.target.value;
+    const isMatched = telNumberValidator.test(value);
+    if(isMatched) setTelNumberMessage('');
+    else setTelNumberMessage('숫자만 입력해주세요')
+    setTelNumber(value);
+  }
+
   return (
     <Box>
       <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="닉네임*" variant="standard" value={nickname} onChange={(event) => setNickname(event.target.value)} />
-      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="휴대폰 번호*" variant="standard" value={telNumber} onChange={(event) => setTelNumber(event.target.value)} />
+      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="휴대폰 번호*" variant="standard" value={telNumber} onChange={(event) => ontelNumberHander(event)} helperText={telNumberMessage}/>
       <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard" >
         <InputLabel>주소*</InputLabel>
         <Input type="text" endAdornment={
@@ -136,6 +175,12 @@ function SecondPage( {signUpError}: SecondPageProps ) {
         />
       </FormControl>
       <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="상세 주소*" variant="standard" value={addressDetail} onChange={(event) => setAddressDetail(event.target.value)} />
+      <Box sx={{ display: 'flex', mt: '24px', alignItems: 'center'}}>
+        <Checkbox color="default" />
+        <Typography sx={{mr:'4px', color: 'red', fontWeight: '400'}}>개인정보동의</Typography>
+        <Typography sx={{fontWeight: '600'}}>더보기&gt;</Typography>
+      </Box>
+      
     </Box>
   );
 }
@@ -153,6 +198,9 @@ export default function SignUpCardView({ setLoginView }: Props) {
   const [page, setPage] = useState<number>(1);
   const [signUpError, setSignUpError] = useState<boolean>(false);
 
+  const emailValidator = /^[A-Za-z0-9]([-.]?[A-Za-z0-9])*@[A-Za-z0-9]([-.]?[A-Za-z0-9])*\.[A-Za-z0-9]{2,3}$/;
+  const passwordValidator = /^(?=.[A-Za-z]*)(?=.[0-9]*)(?=.[!?_]*).{8,20}$/;
+
   //          Event Handler          //
   const onNextButtonHandler = () => {
     //? 해당 문자열 변수가 빈값인지 확인
@@ -162,10 +210,9 @@ export default function SignUpCardView({ setLoginView }: Props) {
       setSignUpError(true);
       return;
     }
-    if (password !== passwordCheck) {
-      alert('비밀번호가 서로 다릅니다.');
-      return;
-    }
+    if(!emailValidator.test(email)) return;
+    if(!passwordValidator.test(password)) return;
+    if (password !== passwordCheck) return;
     setSignUpError(false);
     setPage(2);
   };
@@ -176,14 +223,25 @@ export default function SignUpCardView({ setLoginView }: Props) {
       setPage(1);
       return;
     }
+
     if (!nickname || !telNumber || !address || !addressDetail) {
       alert('모든 값을 입력하세요.');
       setSignUpError(true);
       setPage(2);
       return;
     }
+
+    if(!emailValidator.test(email)) {
+      setPage(1);
+      return;
+    }
+
+    if(!passwordValidator.test(password)){
+      setPage(1);
+      return;
+    }
+
     if (password !== passwordCheck) {
-      alert('비밀번호가 서로 다릅니다.');
       setPage(1);
       return;
     }
