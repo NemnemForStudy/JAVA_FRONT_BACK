@@ -10,7 +10,7 @@ export default function Footer() {
           <Typography sx={{ fontSize: '20px', fontWeight: 400, color: '#ffffff' }}>Nemnem's Board</Typography>
         </Box>
         <Box>
-          <Typography component='span' sx={{ fontSize: '12px', fontWeight: 400, color: '#ffffff' }}>lacls159@gmail.com</Typography>
+          <Typography component='span' sx={{ fontSize: '12px', fontWeight: 400, color: '#ffffff' }}>Nemnem@naver.com</Typography>
           <IconButton>
             <InstagramIcon sx={{ color: '#ffffff' }} />
           </IconButton>
@@ -19,7 +19,7 @@ export default function Footer() {
           </IconButton>
         </Box>
       </Box>
-      <Typography sx={{ fontSize: '12px', fontWeight: 400, color: '#ffffff' }}>Copyright @ 2022 jukoyakki. All Rights Reserved.</Typography>
+      <Typography sx={{ fontSize: '12px', fontWeight: 400, color: '#ffffff' }}>Copyright @ 2023 Nemnem. All Rights Reserved.</Typography>
     </Box>
   )
 }
