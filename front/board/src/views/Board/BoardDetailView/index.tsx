@@ -80,10 +80,7 @@ export default function BoardDetailView() {
 
     const onLikeHander = () => {
         //? 로그인이 안되어 있으면 좋아요 누를 수 없음
-        if(!accessToken) {
-            alert('로그인이 필요한 서비스입니다.');
-            return;
-        }
+        if(!accessToken) return;
 
         //? undefined로 되어있기 때문에 강제로 as string으로 형 변환
         const data: LikeDto = { boardNumber: parseInt(boardNumber as string) };
@@ -278,7 +275,8 @@ export default function BoardDetailView() {
                 <Box sx={{ p: '20px 0px', display: 'flex', justifyContent: 'center' }}>
                     <Pagination page={pageNumber} count={getPageCount(boardList, COUNT)} onChange={(event, value) => onPageHandler(value)} />
                 </Box>
-                <Box>
+                { accessToken && (
+                    <Box>
                     <Card variant='outlined' sx={{ p: '20px' }}>
                         <Input minRows={3} multiline disableUnderline fullWidth value={commentContent} onChange={(event) => setCommentContent(event.target.value)}/>
                         <Box sx={{ display: 'flex', justifyContent: 'end' }}>
@@ -286,6 +284,7 @@ export default function BoardDetailView() {
                         </Box>
                     </Card>
                 </Box>
+                )}
             </Box>
         ) }
         </Box>
