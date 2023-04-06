@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { Avatar, Box, Card, CardActionArea, Typography } from '@mui/material'
+
 import { GetTop3ListResponseDto } from 'src/apis/response/board';
 
 interface Props {
@@ -14,8 +15,7 @@ export default function PreviewCard({ previewItem }: Props) {
 
     const backgroundImage = `url(${previewItem.boardImgUrl})`;
 
-
-   return (
+  return (
     <Card>
         <CardActionArea sx={{ height: '508px', backgroundImage: backgroundImage, backgroundSize: 'cover', backgroundColor: '#666666' }} onClick={() => navigator(`/board/detail/${previewItem.boardNumber}`)}>
             <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column-reverse' }}>

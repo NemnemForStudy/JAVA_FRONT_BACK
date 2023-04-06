@@ -1,4 +1,5 @@
 import { Avatar, Box, Typography } from '@mui/material'
+
 import { Liky } from 'src/interfaces'
 
 interface Props {

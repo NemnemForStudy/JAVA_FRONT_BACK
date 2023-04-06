@@ -1,4 +1,5 @@
 import { Avatar, Box, Divider, Typography } from '@mui/material';
+
 import { Comment } from 'src/interfaces';
 
 interface Props {

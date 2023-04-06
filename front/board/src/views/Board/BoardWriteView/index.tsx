@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState, KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
@@ -10,7 +10,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import ResponseDto from 'src/apis/response';
 import { PostBoardResponseDto } from 'src/apis/response/board';
 import { PostBoardDto } from 'src/apis/request/board';
-import { authorizationHeader, FILE_UPLOAD_URL, POST_BOARD_URL } from 'src/constants/api';
+import { authorizationHeader, FILE_UPLOAD_URL, multipartHeader, POST_BOARD_URL } from 'src/constants/api';
 
 export default function BoardWriteView() {
 
@@ -28,6 +28,17 @@ export default function BoardWriteView() {
   const accessToken = cookies.accessToken;
 
   //          Event Handler          //
+  const onBoardContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const value = event.target.value;
+    console.log(value);
+    setBoardContent(value);
+  }
+
+  //? 만약 줄바꿈 처리가 제대로 되지 않는다면 이 방법을 쓰면 무조건 줄바꿈 처리 가능
+  const onBoardContentKeyPressHandler = (event: KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if(event.key != 'Enter') return;
+    setBoardContent(boardContent + '\n');
+  }
 
   // TODO : Hook 또는 외부 함수로 변경
   const onImageUploadButtonHandler = () => {
@@ -108,7 +119,7 @@ export default function BoardWriteView() {
         <Box sx={{ display: 'flex', alignItems: 'start' }}>
           
           <Box sx={{width:'100%'}}>
-            <Input fullWidth disableUnderline multiline minRows={5} placeholder='본문을 작성해주세요.' sx={{ fontSize: '18px', fontWeight: 500, lineHeight: '150%' }} onChange={(event) => setBoardContent(event.target.value)}/>
+            <Input fullWidth disableUnderline multiline minRows={5} placeholder='본문을 작성해주세요.' sx={{ fontSize: '18px', fontWeight: 500, lineHeight: '150%' }} onChange={(event) => onBoardContentChangeHandler(event)} onKeyDown={(event) => onBoardContentKeyPressHandler(event)}/>
             <Box sx={{ width: '100%'}}component='img' src={boardImgUrl}></Box>
           </Box>
 
@@ -123,8 +134,4 @@ export default function BoardWriteView() {
       </Fab>
     </Box>
   )
-}
-
-function multipartHeader(): import("axios").AxiosRequestConfig<FormData> | undefined {
-  throw new Error('Function not implemented.');
 }

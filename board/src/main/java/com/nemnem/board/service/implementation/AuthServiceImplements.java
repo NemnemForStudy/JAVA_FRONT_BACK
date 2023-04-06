@@ -31,14 +31,17 @@ public class AuthServiceImplements implements AuthService  {
         SignUpResponseDto data = null;
 
         String email = dto.getEmail();
+        String nickname = dto.getNickname();
         String telNumber = dto.getTelNumber();
-        //? password는 다 맞으면 암호화해서 저장해줘야함.
         String password = dto.getPassword();
 
         try {
 
             boolean hasEmail = userRepository.existsByEmail(email);
             if (hasEmail) return ResponseDto.setFailed(ResponseMessage.EXIST_EMAIL);
+
+            boolean hasNickname = userRepository.existsByNickname(nickname);
+            if (hasNickname) return ResponseDto.setFailed(ResponseMessage.EXIST_NICKNAME);
 
             boolean hasTelNumber = userRepository.existsByTelNumber(telNumber);
             if (hasTelNumber) return ResponseDto.setFailed(ResponseMessage.EXIST_TEL_NUMBER);
