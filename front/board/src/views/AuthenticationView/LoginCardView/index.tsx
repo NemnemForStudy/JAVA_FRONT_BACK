@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 import axios, { AxiosResponse } from 'axios';
-import { Box, TextField, Typography, FormControl, InputLabel, Input, InputAdornment, IconButton, Button } from '@mui/material';
+import { Box, TextField, Typography, FormControl, InputLabel, Input, InputAdornment, IconButton, Button, Checkbox } from '@mui/material';
 import {VisibilityOff, Visibility} from '@mui/icons-material';
 
 import { getExpires } from 'src/utils';
@@ -86,31 +86,31 @@ export default function LoginCardView({ setLoginView }: Props) {
   return (
     <Box display='flex' sx={{height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
         <Box>
-            <Typography variant='h5' fontWeight='900'>로그인</Typography>
-            <TextField 
-              error={loginError}
-              sx={{mt: '40px'}} 
-              fullWidth label="이메일 주소" 
-              variant="standard" 
-              onChange={(event) => setEmail(event.target.value)} 
-              onKeyPress={(event) => onEmailKeyPressHandler(event)}/>
-            <FormControl error={loginError} ref={passwordRef} fullWidth variant="standard" sx={{ mt: '40px' }}>
-                <InputLabel>비밀번호</InputLabel>
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  endAdornment={
-                  <InputAdornment position="end">
-                      <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                  </InputAdornment>
-                  }
-                  onChange={(event) => setPassword(event.target.value)}
-                  onKeyPress={(event) => onPasswordKeyPressHandler(event)}
-                />
-            </FormControl>
+          <Typography variant='h5' fontWeight='900'>로그인</Typography>
+          <TextField 
+            error={loginError}
+            sx={{mt: '40px'}} 
+            fullWidth label="이메일 주소" 
+            variant="standard" 
+            onChange={(event) => setEmail(event.target.value)} 
+            onKeyPress={(event) => onEmailKeyPressHandler(event)}/>
+          <FormControl error={loginError} ref={passwordRef} fullWidth variant="standard" sx={{ mt: '40px' }}>
+              <InputLabel>비밀번호</InputLabel>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                <InputAdornment position="end">
+                    <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                </InputAdornment>
+                }
+                onChange={(event) => setPassword(event.target.value)}
+                onKeyPress={(event) => onPasswordKeyPressHandler(event)}
+              />
+          </FormControl>
         </Box>
         <Box>
           { loginError && (

@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
-import axios, { AxiosResponse } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import {
   Box,
   Button,
@@ -22,8 +22,12 @@ import { useSignUpStore } from 'src/stores';
 import { SignUpDto } from "src/apis/request/auth";
 import  ResponseDto  from "src/apis/response";
 import { SignUpResponseDto } from "src/apis/response/auth";
-import { SIGN_UP_URL } from "src/constants/api";
-import { Help } from "@mui/icons-material";
+import { SIGN_UP_URL, VALIDATE_EMAIL_URL, VALIDATE_NICKNAME_URL } from "src/constants/api";
+import CheckIcon from '@mui/icons-material/Check';
+import ValidateEmailResponseDto from "src/apis/response/user/Validate-Email.response.dto";
+import { ValidateEmailDto, ValidateNicknameDto, ValidateTelNumberDto } from "src/apis/request/user";
+import { ValidateNicknameResponseDto } from "src/apis/response/user";
+
 
 //          Component          //
 interface FirstPageProps {
@@ -36,7 +40,12 @@ function FirstPage({ signUpError }: FirstPageProps) {
   const { email, password, passwordCheck } = useSignUpStore();
   const { setEmail, setPassword, setPasswordCheck } = useSignUpStore();
 
+  const [emailValidateMessage, setEmailValidateMessage] = useState<string>('');
+  const [nicknameValidateMessage, setNicknameValidateMessage] = useState<string>('');
+  const [telNumberValidateMessage, setTelNumberValidateMessage] = useState<string>('');
   const [emailMessage, setEmailMessage] = useState<string>('');
+  const [nicknameMessage, setNicknameMessage] = useState<string>('');
+  const [telNumberMessage, setTelNumberMessage] = useState<string>('');
   const [passwordMessage, setPasswordMessage] = useState<string>('');
   const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -67,6 +76,15 @@ function FirstPage({ signUpError }: FirstPageProps) {
     setEmail(value);
   }
 
+  const onEmailValidateButtonHandler = () => {
+    if (emailMessage) return;
+    const data: ValidateEmailDto = { email };
+
+    axios.post(VALIDATE_EMAIL_URL, data)
+      .then((response) => validateEmailResponseHandler(response))
+      .catch((error) => validateEmailErrorHandler(error));
+  }
+
   const onPasswordChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = event.target.value;
     const isMatched = passwordValidator.test(value);
@@ -83,18 +101,66 @@ function FirstPage({ signUpError }: FirstPageProps) {
     setPasswordCheck(value);    
   }
 
+  //          Response Handler          //
+  const validateEmailResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data} = response.data as ResponseDto<ValidateEmailResponseDto>;
+    if(!result || !data) {
+      alert(message);
+      return;
+    }
+    const validateMessage = data.result ? '' : "중복되는 이메일 입니다.";
+    setEmailValidateMessage(validateMessage);
+  }
+
+  const validateNicknameResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<ValidateEmailResponseDto>;
+    if(!result || !data) {
+      alert(message);
+      return;
+    }
+    const validateMessage = data.result ? '' : "중복되는 닉네임 입니다.";
+    setNicknameValidateMessage(validateMessage);
+  }
+
+  const validateTelNumberResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<ValidateNicknameResponseDto>;
+    if(!result || !data) {
+      alert(message);
+      return;
+    }
+    const validateMessage = data.result ? '' : "중복되는 전화번호 입니다.";
+    setTelNumberValidateMessage(validateMessage);
+  }
+
+  //          Error Handler          //
+  const validateEmailErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  const validateNicknameErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  const validateTelNumberErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
   return (
     <Box>
-      <TextField
-        sx={{ mt: "40px" }}
-        error={signUpError}
-        fullWidth
-        label="이메일 주소*"
-        variant="standard"
+      <FormControl sx={{mt: "40px"}} error={signUpError} fullWidth variant="standard">
+        <InputLabel>이메일 주소*</InputLabel>
+        <Input type="text" endAdornment = {
+          <InputAdornment position="end">
+            <IconButton onClick={() => onEmailValidateButtonHandler()} >
+              <CheckIcon />
+            </IconButton>
+          </InputAdornment>
+        }
         value={email}
-        helperText={emailMessage}
         onChange={(event) => onEmailChangeHandler(event)}
-      />
+        />
+        <FormHelperText sx={{ color: 'red' }}>{emailMessage} {emailValidateMessage}</FormHelperText>
+      </FormControl>
       <FormControl sx={{ mt: "40px" }} error={signUpError} fullWidth variant="standard" >
         <InputLabel>비밀번호*</InputLabel>
         <Input
@@ -107,8 +173,7 @@ function FirstPage({ signUpError }: FirstPageProps) {
             </InputAdornment>
           }
           value={password}
-          onChange={(event) => onPasswordChangeHandler(event)}
-        />
+          onChange={(event) => onPasswordChangeHandler(event)} />
         <FormHelperText>{passwordMessage}</FormHelperText>
       </FormControl>
       <FormControl sx={{ mt: "40px" }} error={signUpError} fullWidth variant="standard" >
@@ -149,18 +214,19 @@ function SecondPage( {signUpError}: SecondPageProps ) {
   // const telNumberValidator = /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/
 
   //          Event Handler          //
-  const ontelNumberHander = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const ontelNumberHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = event.target.value;
     const isMatched = telNumberValidator.test(value);
     if(isMatched) setTelNumberMessage('');
     else setTelNumberMessage('숫자만 입력해주세요')
     setTelNumber(value);
   }
+  
 
   return (
     <Box>
       <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="닉네임*" variant="standard" value={nickname} onChange={(event) => setNickname(event.target.value)} />
-      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="휴대폰 번호*" variant="standard" value={telNumber} onChange={(event) => ontelNumberHander(event)} helperText={telNumberMessage}/>
+      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="휴대폰 번호*" variant="standard" value={telNumber} onChange={(event) => ontelNumberHandler(event)} helperText={telNumberMessage}/>
       <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard" >
         <InputLabel>주소*</InputLabel>
         <Input type="text" endAdornment={

@@ -72,7 +72,7 @@ public class UserServiceImplements implements UserService {
 
         try {
             boolean hasNickname = userRepository.existsByNickname(nickname);
-            data = new ValidateNicknameResponseDto(hasNickname);
+            data = new ValidateNicknameResponseDto(!hasNickname);
         } catch(Exception exception) {
             exception.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
@@ -88,7 +88,7 @@ public class UserServiceImplements implements UserService {
 
         try{
             boolean hasTelNumber = userRepository.existsByTelNumber(telNumber);
-            data = new ValidateTelNumberResponseDto(hasTelNumber);
+            data = new ValidateTelNumberResponseDto(!hasTelNumber);
         } catch(Exception exception) {
             exception.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
