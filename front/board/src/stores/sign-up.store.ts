@@ -24,6 +24,34 @@ interface ISignUpStore {
     setTelNumber: (str: string) => void
     setAddress: (str: string) => void;
     setAddressDetail: (str: string) => void;
+
+    //? 인터페이스로 타입을 만들 수 있는데
+    //? 객체 타입을 만드는 행위이다.
+    //? 각각의 속성의 타입을 boolean, null로 잡고
+    //? TS는 null이 들어가지 못함
+    //? set은 객체를 만들적에 메서드를 꼭 만들어야 함.(추상메서드 만드는 중)
+    //? 추상메서드에 어떤 파라미터가 오고 파라미터의 타입은 boolean이고 추상메서드 타입은 void이다.
+    signUpError: boolean;
+    setSignUpError: (signUpError: boolean) => void;
+
+    emailPatternCheck: boolean;
+    setEmailPatternCheck: (emailPatternCheck: boolean) => void;
+    //? public void setEmailPatternCheck(boolean emaulPatternCheck) 과 동일
+    emailValidate: boolean | null;
+    setEmailValidate: (emailValidate: boolean) => void;
+
+    passwordPatternCheck: boolean | null;
+    setPasswordPatternCheck: (passwordPatternCheck: boolean) => void;
+    passwordValidate: boolean | null;
+    setPasswordValidate: (passwordValidate: boolean) => void;
+
+    nicknameValidate: boolean | null;
+    setNicknameValidate: (nicknameValidate: void) => void;
+
+    telNumberPatternCheck: boolean | null;
+    setTelNumberPatternCheck: (telNumberPatternCheck: boolean) => void;
+    telNumberValidate: boolean | null;
+    setTelNumberValidate: (telNumberValidate: boolean) => void;
 }
 
 //^ create 메서드를 사용해서 store를 생성

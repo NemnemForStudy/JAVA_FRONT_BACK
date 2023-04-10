@@ -22,11 +22,11 @@ import { useSignUpStore } from 'src/stores';
 import { SignUpDto } from "src/apis/request/auth";
 import  ResponseDto  from "src/apis/response";
 import { SignUpResponseDto } from "src/apis/response/auth";
-import { SIGN_UP_URL, VALIDATE_EMAIL_URL, VALIDATE_NICKNAME_URL } from "src/constants/api";
+import { SIGN_UP_URL, VALIDATE_EMAIL_URL, VALIDATE_NICKNAME_URL, VALIDATE_TEL_NUMBER_URL } from "src/constants/api";
 import CheckIcon from '@mui/icons-material/Check';
 import ValidateEmailResponseDto from "src/apis/response/user/Validate-Email.response.dto";
 import { ValidateEmailDto, ValidateNicknameDto, ValidateTelNumberDto } from "src/apis/request/user";
-import { ValidateNicknameResponseDto } from "src/apis/response/user";
+import { ValidateNicknameResponseDto, ValidateTelNumberResponseDto } from "src/apis/response/user";
 
 
 //          Component          //
@@ -41,11 +41,7 @@ function FirstPage({ signUpError }: FirstPageProps) {
   const { setEmail, setPassword, setPasswordCheck } = useSignUpStore();
 
   const [emailValidateMessage, setEmailValidateMessage] = useState<string>('');
-  const [nicknameValidateMessage, setNicknameValidateMessage] = useState<string>('');
-  const [telNumberValidateMessage, setTelNumberValidateMessage] = useState<string>('');
   const [emailMessage, setEmailMessage] = useState<string>('');
-  const [nicknameMessage, setNicknameMessage] = useState<string>('');
-  const [telNumberMessage, setTelNumberMessage] = useState<string>('');
   const [passwordMessage, setPasswordMessage] = useState<string>('');
   const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -101,35 +97,15 @@ function FirstPage({ signUpError }: FirstPageProps) {
     setPasswordCheck(value);    
   }
 
-  //          Response Handler          //
-  const validateEmailResponseHandler = (response: AxiosResponse<any, any>) => {
-    const { result, message, data} = response.data as ResponseDto<ValidateEmailResponseDto>;
-    if(!result || !data) {
-      alert(message);
-      return;
-    }
-    const validateMessage = data.result ? '' : "중복되는 이메일 입니다.";
-    setEmailValidateMessage(validateMessage);
-  }
-
-  const validateNicknameResponseHandler = (response: AxiosResponse<any, any>) => {
+   //          Response Handler          //
+   const validateEmailResponseHandler = (response: AxiosResponse<any, any>) => {
     const { result, message, data } = response.data as ResponseDto<ValidateEmailResponseDto>;
-    if(!result || !data) {
+    if (!result || !data) {
       alert(message);
       return;
     }
-    const validateMessage = data.result ? '' : "중복되는 닉네임 입니다.";
-    setNicknameValidateMessage(validateMessage);
-  }
-
-  const validateTelNumberResponseHandler = (response: AxiosResponse<any, any>) => {
-    const { result, message, data } = response.data as ResponseDto<ValidateNicknameResponseDto>;
-    if(!result || !data) {
-      alert(message);
-      return;
-    }
-    const validateMessage = data.result ? '' : "중복되는 전화번호 입니다.";
-    setTelNumberValidateMessage(validateMessage);
+    const validateMessage = data.result ? '' : '중복되는 이메일입니다.';
+    setEmailValidateMessage(validateMessage);
   }
 
   //          Error Handler          //
@@ -137,13 +113,6 @@ function FirstPage({ signUpError }: FirstPageProps) {
     console.log(error.message);
   }
 
-  const validateNicknameErrorHandler = (error: any) => {
-    console.log(error.message);
-  }
-
-  const validateTelNumberErrorHandler = (error: any) => {
-    console.log(error.message);
-  }
 
   return (
     <Box>
@@ -209,25 +178,108 @@ function SecondPage( {signUpError}: SecondPageProps ) {
   const { nickname, telNumber, address, addressDetail } = useSignUpStore();
   const { setNickname, setTelNumber, setAddress, setAddressDetail } = useSignUpStore();
 
-  const [telNumberMessage, setTelNumberMessage] = useState<string>('');
-  const telNumberValidator = /^[0-9]{0,13}$/;
-  // const telNumberValidator = /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/
+  const [validateNickname, setValidateNickname] = useState<boolean | null>(null);
+  const [validateTelNumber, setValidateTelNumber] = useState<boolean | null>(null);
+  const [checkPatternTelNumber, setCheckPatternTelNumber] = useState<boolean | null>(null);
+
+  // const telNumberVaildator = /^[0-9]{0,13}$/;
+  const telNumberVaildator = /^[0-9]{3}-[0-9]{3,4}-[0-9]{3,4}$/;
 
   //          Event Handler          //
-  const ontelNumberHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const onTelNumberHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = event.target.value;
-    const isMatched = telNumberValidator.test(value);
-    if(isMatched) setTelNumberMessage('');
-    else setTelNumberMessage('숫자만 입력해주세요')
+    const isMatched = telNumberVaildator.test(value);
+    setCheckPatternTelNumber(isMatched);
     setTelNumber(value);
+  }
+
+  const onTelNumberValidateButtonHandler = () => {
+    if (telNumber.length > 13) return;
+    const data: ValidateTelNumberDto = { telNumber };
+
+    axios.post(VALIDATE_TEL_NUMBER_URL, data)
+      .then((response) => validateTelNumberResponseHandler(response))
+      .catch((error) => validateTelNumberErrorHandler(error));
+  }
+
+  const onNicknameValidateButtonHandler = () => {
+    if (!nickname) return;
+    const data: ValidateNicknameDto = { nickname };
+
+    axios.post(VALIDATE_NICKNAME_URL, data)
+      .then((response) => validateNicknameResponseHandler(response))
+      .catch((error) => validateNicknameErrorHandler(error));
+  }
+
+  //          Response Handler          //
+  const validateTelNumberResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<ValidateTelNumberResponseDto>;
+    if (!result || !data) {
+      alert(message);
+      return;
+    }
+    setValidateTelNumber(data.result);
+  }
+
+  const validateNicknameResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<ValidateNicknameResponseDto>;
+    if (!result || !data) {
+      alert(message);
+      return;
+    }
+    setValidateNickname(data.result);
+  }
+
+  //          Error Handler          //
+  const validateTelNumberErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  const validateNicknameErrorHandler = (error: any) => {
+    console.log(error.message);
   }
   
 
   return (
     <Box>
-      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="닉네임*" variant="standard" value={nickname} onChange={(event) => setNickname(event.target.value)} />
-      <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="휴대폰 번호*" variant="standard" value={telNumber} onChange={(event) => ontelNumberHandler(event)} helperText={telNumberMessage}/>
-      <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard" >
+      <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard">
+        <InputLabel>닉네임*</InputLabel>
+        <Input type="text" endAdornment={
+          <InputAdornment position="end">
+            <IconButton onClick={() => onNicknameValidateButtonHandler()}>
+              <CheckIcon />
+            </IconButton>
+          </InputAdornment>
+        } 
+        value={nickname}
+        onChange={(event) => setNickname(event.target.value)}
+        />
+        {
+          validateNickname === null ? (<></>):
+          validateNickname ? (<FormHelperText sx={{ color: 'green' }}>사용 가능한 닉네임입니다.</FormHelperText>) : 
+                             (<FormHelperText sx={{ color: 'red' }}>사용 중인 닉네임입니다.</FormHelperText>)
+        }
+      </FormControl>
+      <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard">
+        <InputLabel>휴대폰 번호*</InputLabel>
+        <Input type="text" endAdornment={
+          <InputAdornment position="end">
+            <IconButton onClick={() => onTelNumberValidateButtonHandler()}>
+              <CheckIcon />
+            </IconButton>
+          </InputAdornment>
+        } 
+        value={telNumber}
+        onChange={(event) => onTelNumberHandler(event)}
+        />
+        {
+          validateTelNumber === null &&  checkPatternTelNumber === null ? (<></>) :
+          !checkPatternTelNumber ? (<FormHelperText sx={{ color: 'red' }}>전화번호 패턴이 일치하지 않습니다.</FormHelperText>) :
+          validateTelNumber ? (<FormHelperText sx={{ color: 'green' }}>사용 가능한 전화번호입니다.</FormHelperText>) :
+                              (<FormHelperText sx={{ color: 'red' }}>사용중인 전화번호입니다.</FormHelperText>)
+        }
+      </FormControl>
+      <FormControl sx={{mt: '40px'}} error={signUpError} fullWidth variant="standard">
         <InputLabel>주소*</InputLabel>
         <Input type="text" endAdornment={
           <InputAdornment position="end">
@@ -241,12 +293,11 @@ function SecondPage( {signUpError}: SecondPageProps ) {
         />
       </FormControl>
       <TextField sx={{mt: '40px'}} error={signUpError} fullWidth label="상세 주소*" variant="standard" value={addressDetail} onChange={(event) => setAddressDetail(event.target.value)} />
-      <Box sx={{ display: 'flex', mt: '24px', alignItems: 'center'}}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: '24px' }}>
         <Checkbox color="default" />
-        <Typography sx={{mr:'4px', color: 'red', fontWeight: '400'}}>개인정보동의</Typography>
-        <Typography sx={{fontWeight: '600'}}>더보기&gt;</Typography>
+        <Typography sx={{mr: '4px', color: 'red', fontWeight: 400}}>개인정보동의</Typography>
+        <Typography sx={{fontWeight: 700}}>더보기&gt;</Typography>
       </Box>
-      
     </Box>
   );
 }
